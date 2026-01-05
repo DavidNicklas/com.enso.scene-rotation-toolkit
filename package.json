@@ -1,0 +1,14 @@
+{
+    "name": "com.enso.scene-rotation-toolkit",
+    "displayName": "Scene Rotation Toolkit",
+    "author": "David Nicklas",
+    "version": "0.1.0",
+    "unity": "6000.0",
+    "type": "library",
+    "keywords": [
+        "scene view",
+        "2d",
+        "editor tool"
+    ],
+    "_fingerprint": "07434fccd016a2fabab284e0aff30a592881c318"
+}
