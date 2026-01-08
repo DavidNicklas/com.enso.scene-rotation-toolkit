@@ -33,9 +33,14 @@ namespace SceneRotationToolkit.Editor
 
         public static void SetRotation(float zRotation)
         {
+            if (Mathf.Approximately(SceneZRotation, zRotation))
+            {
+                return;
+            }
+
             SceneZRotation = zRotation;
             Save();
-            Apply(SceneView.lastActiveSceneView);
+            Apply(SceneView.lastActiveSceneView, $"Rotate to: {SceneZRotation}°");
             onChanged?.Invoke();
         }
 
@@ -43,7 +48,7 @@ namespace SceneRotationToolkit.Editor
         {
             Fake2DMode = !Fake2DMode;
             Save();
-            Apply(SceneView.lastActiveSceneView);
+            Apply(SceneView.lastActiveSceneView, $"2D Mode: {Fake2DMode}");
             onChanged?.Invoke();
         }
 
@@ -51,7 +56,8 @@ namespace SceneRotationToolkit.Editor
         /// Applies the new rotation to the scene view camera
         /// </summary>
         /// <param name="sv">the scene view to apply the rotation to</param>
-        private static void Apply(SceneView sv)
+        /// <param name="notificationMessage">message to show</param>
+        private static void Apply(SceneView sv, string notificationMessage = "")
         {
             if (sv == null) return;
 
@@ -69,7 +75,10 @@ namespace SceneRotationToolkit.Editor
                 false
             );
 
-            sv.ShowNotification(new GUIContent($"2D Mode: {Fake2DMode}"), 1.5f);
+            if (!string.IsNullOrEmpty(notificationMessage))
+            {
+                sv.ShowNotification(new GUIContent(notificationMessage), 1.5f);
+            }
             sv.Repaint();
         }
 
