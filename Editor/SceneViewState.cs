@@ -67,6 +67,9 @@ namespace SceneRotationToolkit.Editor
             EnableTool = !EnableTool;
             ResetToDefaults();
             Save();
+
+            SceneViewController.Toggle(EnableTool);
+
             onChanged?.Invoke();
         }
 
@@ -134,6 +137,8 @@ namespace SceneRotationToolkit.Editor
 
             sv.in2DMode = false;
             sv.orthographic = Fake2DMode;
+
+            sv.isRotationLocked = Fake2DMode;
 
             Vector3 forward = Vector3.forward;
             Vector3 up = Quaternion.AngleAxis(SceneZRotation, forward) * Vector3.up;

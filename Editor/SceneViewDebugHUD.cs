@@ -1,3 +1,4 @@
+using System;
 using UnityEditor;
 using UnityEngine;
 
@@ -18,6 +19,7 @@ namespace SceneRotationToolkit.Editor
             if (cam == null) return;
 
             DrawPivotGizmo(sv);
+            DrawCurrentRotation(sv);
             DrawHUD(sv);
         }
 
@@ -45,6 +47,54 @@ namespace SceneRotationToolkit.Editor
             Handles.ArrowHandleCap(0, p, Quaternion.LookRotation(r * Vector3.right), a, EventType.Repaint);
             Handles.ArrowHandleCap(0, p, Quaternion.LookRotation(r * Vector3.up), a, EventType.Repaint);
             Handles.ArrowHandleCap(0, p, Quaternion.LookRotation(r * Vector3.forward), a, EventType.Repaint);
+        }
+
+        private static void DrawCurrentRotation(SceneView sv)
+        {
+            Handles.BeginGUI();
+            var style = new GUIStyle(EditorStyles.miniLabel)
+            {
+                richText = false,
+                alignment =  TextAnchor.MiddleCenter,
+                wordWrap = true
+            };
+
+            var rotationState = SceneViewState.GetState();
+
+            // Background box dimension
+            float width = Mathf.Min(100, sv.position.width - 20);
+            var rect = new Rect((sv.position.width / 2) - (width / 2), 10, width, 0);
+            rect.height = style.CalcHeight(new GUIContent(rotationState.ToString()), width) + 12;
+
+            DrawOutline(rect, 2f, Color.black);
+
+            var bgColor = rotationState switch
+            {
+                RotationState.South => new Color(1, 0, 0.2f, 0.55f),
+                RotationState.North => new Color(0, 0.8f, 1, 0.55f),
+                RotationState.East => new Color(0.3f, 0, 0.7f, 0.55f),
+                RotationState.West => new Color(0.7f, 0.5f, 0, 0.55f),
+                _ => throw new ArgumentOutOfRangeException()
+            };
+            EditorGUI.DrawRect(rect, bgColor);
+
+            // Text
+            var textRect = new Rect(rect.x + 6, rect.y + 6, rect.width - 12, rect.height - 12);
+            GUI.Label(textRect, rotationState.ToString(), style);
+
+            Handles.EndGUI();
+        }
+
+        private static void DrawOutline(Rect r, float thickness, Color color)
+        {
+            // Top
+            EditorGUI.DrawRect(new Rect(r.x, r.y, r.width, thickness), color);
+            // Bottom
+            EditorGUI.DrawRect(new Rect(r.x, r.yMax - thickness, r.width, thickness), color);
+            // Left
+            EditorGUI.DrawRect(new Rect(r.x, r.y, thickness, r.height), color);
+            // Right
+            EditorGUI.DrawRect(new Rect(r.xMax - thickness, r.y, thickness, r.height), color);
         }
 
         /// <summary>

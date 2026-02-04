@@ -20,7 +20,7 @@ namespace SceneRotationToolkit.Editor
 
             bool alt = (e.modifiers & EventModifiers.Alt) != 0;
 
-            // Only for MMB drag (Unity routes this nicely through pan)
+            // Only for MMB drag
             bool mmbDown = e.type == EventType.MouseDown && e.button == 2;
             bool mmbDrag = e.type == EventType.MouseDrag && e.button == 2;
             bool mmbUp   = e.type == EventType.MouseUp   && e.button == 2;

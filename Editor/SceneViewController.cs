@@ -3,14 +3,8 @@ using UnityEngine;
 
 namespace SceneRotationToolkit.Editor
 {
-    [InitializeOnLoad]
     public static class SceneViewController
     {
-        static SceneViewController()
-        {
-            SceneView.duringSceneGui += OnSceneGUI;
-        }
-
         private static void OnSceneGUI(SceneView sv)
         {
             SceneViewDebugHUD.Draw(sv);
@@ -26,6 +20,15 @@ namespace SceneRotationToolkit.Editor
             }
 
             SceneViewOrbitController.Handle(sv, e);
+        }
+
+        public static void Toggle(bool enableTool)
+        {
+            if (enableTool)
+            {
+                SceneView.duringSceneGui += OnSceneGUI;
+            }
+            else SceneView.duringSceneGui -= OnSceneGUI;
         }
     }
 }
