@@ -1,0 +1,125 @@
+using UnityEditor;
+using UnityEngine;
+
+namespace SceneRotationToolkit.Editor
+{
+    public static class SceneViewDebugHUD
+    {
+        // For possible Toggle On/Off
+        public static bool Enabled => true;
+
+        private const float PIVOT_GIZMO_THICKNESS = 1.5f;
+
+        public static void Draw(SceneView sv)
+        {
+            if (!Enabled || sv == null || !SceneViewState.EnableTool) return;
+
+            var cam = sv.camera;
+            if (cam == null) return;
+
+            DrawPivotGizmo(sv);
+            DrawHUD(sv);
+        }
+
+        /// <summary>
+        /// Draws the pivot of the camera with corresponding up and right vector and its custom axes
+        /// </summary>
+        /// <param name="sv"></param>
+        private static void DrawPivotGizmo(SceneView sv)
+        {
+            Handles.zTest = UnityEngine.Rendering.CompareFunction.Always;
+
+            Vector3 p = sv.pivot;
+
+            Handles.Label(p + Vector3.down, "Camera Pivot");
+
+            // Cross at pivot
+            float s = HandleUtility.GetHandleSize(p) * 0.25f;
+            Handles.DrawLine(p + Vector3.right * s, p - Vector3.right * s, PIVOT_GIZMO_THICKNESS);
+            Handles.DrawLine(p + Vector3.up * s, p - Vector3.up * s, PIVOT_GIZMO_THICKNESS);
+            Handles.DrawLine(p + Vector3.forward * s, p - Vector3.forward * s, PIVOT_GIZMO_THICKNESS);
+
+            // Local axes at pivot based on SceneView rotation
+            Quaternion r = sv.rotation;
+            float a = HandleUtility.GetHandleSize(p);// * 0.25f;
+            Handles.ArrowHandleCap(0, p, Quaternion.LookRotation(r * Vector3.right), a, EventType.Repaint);
+            Handles.ArrowHandleCap(0, p, Quaternion.LookRotation(r * Vector3.up), a, EventType.Repaint);
+            Handles.ArrowHandleCap(0, p, Quaternion.LookRotation(r * Vector3.forward), a, EventType.Repaint);
+        }
+
+        /// <summary>
+        /// Draws alls the information inside a container in the scene view
+        /// </summary>
+        /// <param name="sv"></param>
+        private static void DrawHUD(SceneView sv)
+        {
+            var cam = sv.camera;
+            var e = Event.current;
+
+            Vector3 camPos = cam.transform.position;
+            Vector3 camFwd = cam.transform.forward;
+            Vector3 camUp = cam.transform.up;
+            Vector3 camRight = cam.transform.right;
+
+            float camDist = Vector3.Distance(camPos, sv.pivot);
+
+            Vector3 rotEuler = sv.rotation.eulerAngles;
+
+            string zoomLine = $"CamDist: {camDist:0.###}";
+
+            string toolState =
+                $"EnableTool: {SceneViewState.EnableTool}   Fake2D: {SceneViewState.Fake2DMode}   SceneZ: {SceneViewState.SceneZRotation:0}°";
+
+            string inputState =
+                $"Mouse: {e.type} btn:{e.button} alt:{e.alt} shift:{e.shift} ctrl:{e.control} cmd:{e.command} " +
+                $"delta:{e.delta} pos:{e.mousePosition}";
+
+            string basis =
+                $"SV Rot Euler: {rotEuler.x:0.##}, {rotEuler.y:0.##}, {rotEuler.z:0.##}\n" +
+                $"SV Forward: {FormatText(sv.rotation * Vector3.forward)}  Up: {FormatText(sv.rotation * Vector3.up)}  Right: {FormatText(sv.rotation * Vector3.right)}";
+
+            string camBasis =
+                $"Cam Pos: {FormatText(camPos)}\n" +
+                $"Cam Forward: {FormatText(camFwd)}  Up: {FormatText(camUp)}  Right: {FormatText(camRight)}";
+
+            string pivot =
+                $"Pivot: {FormatText(sv.pivot)}";
+
+            string mode =
+                $"2D Mode (Unity): {sv.in2DMode}   Ortho: {sv.orthographic}   isRotationLocked: {sv.isRotationLocked}\n" +
+                zoomLine;
+
+            string text =
+                $"{toolState}\n" +
+                $"{mode}\n" +
+                $"{pivot}\n" +
+                $"{basis}\n" +
+                $"{camBasis}\n" +
+                $"{inputState}";
+
+            Handles.BeginGUI();
+            var style = new GUIStyle(EditorStyles.miniLabel)
+            {
+                richText = false,
+                wordWrap = true
+            };
+
+            // Background box
+            float width = Mathf.Min(520, sv.position.width - 20);
+            var rect = new Rect(10, 10, width, 0);
+            rect.height = style.CalcHeight(new GUIContent(text), width) + 12;
+
+            // Slight translucent background
+            var bg = new Color(0, 0, 0, 0.55f);
+            EditorGUI.DrawRect(rect, bg);
+
+            // Text
+            var textRect = new Rect(rect.x + 6, rect.y + 6, rect.width - 12, rect.height - 12);
+            GUI.Label(textRect, text, style);
+
+            Handles.EndGUI();
+        }
+
+        private static string FormatText(Vector3 v) => $"({v.x:0.###}, {v.y:0.###}, {v.z:0.###})";
+    }
+}

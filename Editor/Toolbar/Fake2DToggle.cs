@@ -23,12 +23,19 @@ namespace SceneRotationToolkit.Editor
             });
 
             SceneViewState.onChanged += Sync;
+            SceneViewState.onChanged += UpdateVisibility;
             Sync();
+            UpdateVisibility();
         }
 
         private void Sync()
         {
             SetValueWithoutNotify(SceneViewState.Fake2DMode);
+        }
+
+        private void UpdateVisibility()
+        {
+            style.display = SceneViewState.EnableTool ? DisplayStyle.Flex : DisplayStyle.None;
         }
     }
 }

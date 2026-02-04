@@ -5,11 +5,19 @@ namespace SceneRotationToolkit.Editor
 {
     public static class SceneViewOrbitController
     {
+        private static float yawSign = 1f;
+
         public static void Handle(SceneView sv, Event e)
         {
             if (sv.in2DMode) return;
 
-            if (!IsOrbitEvent(e)) return;
+            if (IsOrbitStart(e))
+            {
+                UpdateYawSign(sv);
+                return;
+            }
+
+            if (!IsOrbitDrag(e)) return;
 
             Orbit(sv, e);
             e.Use();
@@ -17,31 +25,41 @@ namespace SceneRotationToolkit.Editor
 
         private static void Orbit(SceneView sv, Event e)
         {
-            float sensitivity = 0.2f;
+            // Same style of scaling used in UnityCsReference / common editor scripts
+            float scaling = 0.003f * Mathf.Rad2Deg;
 
-            Quaternion rot = sv.rotation;
+            Quaternion sceneRotation = sv.rotation;
 
             Vector3 sceneUp = Quaternion.AngleAxis(SceneViewState.SceneZRotation, Vector3.forward) * Vector3.up;
-            Vector3 sceneRight = Vector3.Cross(sceneUp, Vector3.forward).normalized;
 
-            float dx = e.delta.x * sensitivity;
-            float dy = e.delta.y * sensitivity;
+            // Pitch around camera-local right axis
+            sceneRotation = Quaternion.AngleAxis(e.delta.y * scaling, sceneRotation * Vector3.right) * sceneRotation;
 
-            Quaternion yaw   = Quaternion.AngleAxis(dx, sceneUp);
-            Quaternion pitch = Quaternion.AngleAxis(dy, sceneRight);
+            // Yaw around (possibly flipped) up axis
+            sceneRotation = Quaternion.AngleAxis(yawSign * e.delta.x * scaling, sceneUp) * sceneRotation;
 
-            Quaternion newRot = yaw * pitch * rot;
-            Vector3 forward = newRot * Vector3.forward;
-
-            sv.rotation = Quaternion.LookRotation(forward, sceneUp);
+            sv.rotation = sceneRotation;
         }
 
-        private static bool IsOrbitEvent(Event e)
+        private static void UpdateYawSign(SceneView sv)
         {
-            if (e.type != EventType.MouseDrag)
-                return false;
+            Vector3 sceneUp = Quaternion.AngleAxis(SceneViewState.SceneZRotation, Vector3.forward) * Vector3.up;
 
-            // Alt + LMB or RMB drag = orbit in SceneView
+            // When the camera is upside down relative to sceneUp, Unity flips horizontal orbit direction
+            // to avoid mirrored left/right feel.
+            yawSign = Mathf.Sign(Vector3.Dot(sv.rotation * Vector3.up, sceneUp));
+            if (Mathf.Approximately(yawSign, 0f)) yawSign = 1f;
+        }
+
+        private static bool IsOrbitStart(Event e)
+        {
+            if (e.type != EventType.MouseDown) return false;
+            return (e.alt && e.button == 0) || e.button == 1;
+        }
+
+        private static bool IsOrbitDrag(Event e)
+        {
+            if (e.type != EventType.MouseDrag) return false;
             return (e.alt && e.button == 0) || e.button == 1;
         }
     }

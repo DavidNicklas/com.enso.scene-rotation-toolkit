@@ -1,6 +1,8 @@
 using UnityEditor;
+using UnityEditor.ShortcutManagement;
 using UnityEditor.Toolbars;
 using UnityEngine;
+using UnityEngine.UIElements;
 
 namespace SceneRotationToolkit.Editor
 {
@@ -16,38 +18,41 @@ namespace SceneRotationToolkit.Editor
 
             clicked += ShowMenu;
 
-            SceneViewState.onChanged += UpdateLabel;
-            UpdateLabel();
+            SceneViewState.onChanged += UpdateAppearance;
+            UpdateAppearance();
         }
 
-        private void UpdateLabel()
+        private void UpdateAppearance()
         {
-            text = $"{SceneViewState.SceneZRotation:0}°";
+            text = $"{SceneViewState.GetState().ToString()}";
+            style.display = SceneViewState.EnableTool ? DisplayStyle.Flex : DisplayStyle.None;
         }
 
         private void ShowMenu()
         {
+            if (!SceneViewState.EnableTool) return;
+
             var menu = new GenericMenu();
 
-            AddRotation(menu, "Rotate 0°", 0f, "1");
-            AddRotation(menu, "Rotate 90°", 90f, "2");
-            AddRotation(menu, "Rotate 180°", 180f, "3");
-            AddRotation(menu, "Rotate 270°", 270f, "4");
+            AddRotation(menu, "Rotate South", RotationState.South, SceneRotationShortcuts.GetShortcutName(ShortcutTypes.RotateSouth));
+            AddRotation(menu, "Rotate East", RotationState.East, SceneRotationShortcuts.GetShortcutName(ShortcutTypes.RotateEast));
+            AddRotation(menu, "Rotate North", RotationState.North, SceneRotationShortcuts.GetShortcutName(ShortcutTypes.RotateNorth));
+            AddRotation(menu, "Rotate West", RotationState.West, SceneRotationShortcuts.GetShortcutName(ShortcutTypes.RotateWest));
 
             menu.AddSeparator("");
 
             menu.AddItem(
-                new GUIContent("Toggle Fake 2D Mode"),
+                new GUIContent($"Toggle Fake 2D Mode\t{SceneRotationShortcuts.GetShortcutName(ShortcutTypes.ToggleFake2D)}"),
                 SceneViewState.Fake2DMode,
-                () => SceneViewState.ToggleFake2DMode()
+                SceneViewState.ToggleFake2DMode
             );
 
             menu.ShowAsContext();
         }
 
-        private void AddRotation(GenericMenu menu, string label, float rot, string shortcutLabel)
+        private void AddRotation(GenericMenu menu, string label, RotationState rot, string shortcutLabel)
         {
-            bool active = Mathf.Approximately(SceneViewState.SceneZRotation, rot);
+            bool active = Mathf.Approximately(SceneViewState.SceneZRotation, SceneViewState.GetRotationValue(rot));
 
             menu.AddItem(
                 new GUIContent($"{label}\t{shortcutLabel}"),

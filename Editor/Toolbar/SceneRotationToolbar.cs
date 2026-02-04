@@ -5,12 +5,13 @@ using UnityEngine;
 namespace SceneRotationToolkit.Editor
 {
     [Overlay(typeof(SceneView), "Scene Rotation", true)]
-    [Icon("d_SceneAsset Icon")]
+    [Icon("d_ContentSizeFitter Icon")]
     public class SceneRotationToolbar : ToolbarOverlay
     {
         public SceneRotationToolbar()
             : base
             (
+                EnableTool.ID,
                 SceneRotationOptionsDropdown.ID,
                 Fake2DToggle.ID,
                 SceneRotationSettings.ID

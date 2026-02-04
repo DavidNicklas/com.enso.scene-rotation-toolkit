@@ -1,50 +1,72 @@
+using System;
 using UnityEditor;
 using UnityEditor.ShortcutManagement;
 using UnityEngine;
 
 namespace SceneRotationToolkit.Editor
 {
+    public enum ShortcutTypes { ToggleTool, ToggleFake2D, RotateSouth, RotateNorth, RotateWest, RotateEast }
+
     public static class SceneRotationShortcuts
     {
-        [Shortcut("Scene Rotation Toolkit/Toggle UI", typeof(SceneView), KeyCode.R, ShortcutModifiers.Alt)]
-        private static void ToggleOverlayShortcut()
-        {
-            // Toggle the overlay
-            var sceneView = SceneView.lastActiveSceneView;
-            if (sceneView == null) return;
+        private const string TOGGLE_TOOL_SHORTCUT_ID = "Scene Rotation Toolkit/Toggle Tool";
+        private const string ROTATE_SOUTH_SHORTCUT_ID = "Scene Rotation Toolkit/South";
+        private const string ROTATE_EAST_SHORTCUT_ID = "Scene Rotation Toolkit/East";
+        private const string ROTATE_NORTH_SHORTCUT_ID = "Scene Rotation Toolkit/North";
+        private const string ROTATE_WEST_SHORTCUT_ID = "Scene Rotation Toolkit/West";
+        private const string TOGGLE_2D_SHORTCUT_ID = "Scene Rotation Toolkit/Toggle Fake 2D";
 
-            sceneView.TryGetOverlay("Scene Rotation", out var overlay);
-            overlay.displayed = !overlay.displayed;
+        [Shortcut(TOGGLE_TOOL_SHORTCUT_ID, typeof(SceneView), KeyCode.R, ShortcutModifiers.Alt)]
+        private static void ToggleToolShortcut()
+        {
+            SceneViewState.ToggleTool();
         }
 
-        [Shortcut("Scene Rotation Toolkit/0°", typeof(SceneView), KeyCode.Alpha1)]
-        public static void Rotate0()
+        [Shortcut(ROTATE_SOUTH_SHORTCUT_ID, typeof(SceneView), KeyCode.Alpha1)]
+        public static void RotateSouth()
         {
-            SceneViewState.SetRotation(0f);
+            if (SceneViewState.EnableTool) SceneViewState.SetRotation(RotationState.South);
         }
 
-        [Shortcut("Scene Rotation Toolkit/90°", typeof(SceneView), KeyCode.Alpha2)]
-        public static void Rotate90()
+        [Shortcut(ROTATE_EAST_SHORTCUT_ID, typeof(SceneView), KeyCode.Alpha2)]
+        public static void RotateEast()
         {
-            SceneViewState.SetRotation(90f);
+            if (SceneViewState.EnableTool) SceneViewState.SetRotation(RotationState.East);
         }
 
-        [Shortcut("Scene Rotation Toolkit/180°", typeof(SceneView), KeyCode.Alpha3)]
-        public static void Rotate180()
+        [Shortcut(ROTATE_NORTH_SHORTCUT_ID, typeof(SceneView), KeyCode.Alpha3)]
+        public static void RotateNorth()
         {
-            SceneViewState.SetRotation(180f);
+            if (SceneViewState.EnableTool) SceneViewState.SetRotation(RotationState.North);
         }
 
-        [Shortcut("Scene Rotation Toolkit/270°", typeof(SceneView), KeyCode.Alpha4)]
-        public static void Rotate270()
+        [Shortcut(ROTATE_WEST_SHORTCUT_ID, typeof(SceneView), KeyCode.Alpha4)]
+        public static void RotateWest()
         {
-            SceneViewState.SetRotation(270f);
+            if (SceneViewState.EnableTool) SceneViewState.SetRotation(RotationState.West);
         }
 
-        [Shortcut("Scene Rotation Toolkit/Toggle Fake 2D", typeof(SceneView), KeyCode.Alpha5)]
+        [Shortcut(TOGGLE_2D_SHORTCUT_ID, typeof(SceneView), KeyCode.Alpha5)]
         public static void ToggleFake2D()
         {
-            SceneViewState.ToggleFake2DMode();
+            if (SceneViewState.EnableTool) SceneViewState.ToggleFake2DMode();
+        }
+
+        public static string GetShortcutName(ShortcutTypes type)
+        {
+            string id = type switch
+            {
+                ShortcutTypes.ToggleTool => TOGGLE_TOOL_SHORTCUT_ID,
+                ShortcutTypes.ToggleFake2D => TOGGLE_2D_SHORTCUT_ID,
+                ShortcutTypes.RotateSouth => ROTATE_SOUTH_SHORTCUT_ID,
+                ShortcutTypes.RotateNorth => ROTATE_NORTH_SHORTCUT_ID,
+                ShortcutTypes.RotateWest => ROTATE_WEST_SHORTCUT_ID,
+                ShortcutTypes.RotateEast => ROTATE_EAST_SHORTCUT_ID,
+                _ => throw new ArgumentOutOfRangeException(nameof(type), type, null)
+            };
+
+            var shortcutBinding = ShortcutManager.instance.GetShortcutBinding(id);
+            return shortcutBinding.ToString();
         }
     }
 }

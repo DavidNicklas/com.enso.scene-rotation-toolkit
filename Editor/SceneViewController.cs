@@ -11,13 +11,17 @@ namespace SceneRotationToolkit.Editor
             SceneView.duringSceneGui += OnSceneGUI;
         }
 
-        static void OnSceneGUI(SceneView sv)
+        private static void OnSceneGUI(SceneView sv)
         {
+            SceneViewDebugHUD.Draw(sv);
+
+            if (!SceneViewState.EnableTool) return;
+
             var e = Event.current;
 
             if (SceneViewState.Fake2DMode)
             {
-                SceneViewPanController.Handle(sv, e);
+                Fake2DModeController.Handle(sv, e);
                 return;
             }
 
