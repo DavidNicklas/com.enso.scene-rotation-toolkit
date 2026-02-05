@@ -25,9 +25,11 @@ namespace SceneRotationToolkit.Editor
             var cam = sv.camera;
             if (cam == null) return;
 
-            DrawPivotGizmo(sv);
-            DrawCurrentRotation(sv);
-            DrawHUD(sv);
+            var settings = SceneViewDebugSettings.instance;
+
+            if (settings.showPivotGizmo) DrawPivotGizmo(sv);
+            if (settings.showRotationBadge) DrawRotationBadge(sv, settings);
+            if (settings.showHud) DrawHUD(sv, settings);
         }
 
         /// <summary>
@@ -56,7 +58,13 @@ namespace SceneRotationToolkit.Editor
             Handles.ArrowHandleCap(0, p, Quaternion.LookRotation(r * Vector3.forward), a, EventType.Repaint);
         }
 
-        private static void DrawCurrentRotation(SceneView sv)
+        /// <summary>
+        /// Draws a small rectangle with a label and a color of the current rotation
+        /// </summary>
+        /// <param name="sv"></param>
+        /// <param name="settings"></param>
+        /// <exception cref="ArgumentOutOfRangeException"></exception>
+        private static void DrawRotationBadge(SceneView sv, SceneViewDebugSettings settings)
         {
             Handles.BeginGUI();
             var style = new GUIStyle(EditorStyles.miniLabel)
@@ -77,10 +85,10 @@ namespace SceneRotationToolkit.Editor
 
             var bgColor = rotationState switch
             {
-                RotationState.South => new Color(1, 0, 0.2f, 0.55f),
-                RotationState.North => new Color(0, 0.8f, 1, 0.55f),
-                RotationState.East => new Color(0.3f, 0, 0.7f, 0.55f),
-                RotationState.West => new Color(0.7f, 0.5f, 0, 0.55f),
+                RotationState.South => new Color(1, 0, 0.2f, settings.hudOpacity),
+                RotationState.North => new Color(0, 0.8f, 1, settings.hudOpacity),
+                RotationState.East => new Color(0.3f, 0, 0.7f, settings.hudOpacity),
+                RotationState.West => new Color(0.7f, 0.5f, 0, settings.hudOpacity),
                 _ => throw new ArgumentOutOfRangeException()
             };
             EditorGUI.DrawRect(rect, bgColor);
@@ -108,7 +116,8 @@ namespace SceneRotationToolkit.Editor
         /// Draws alls the information inside a container in the scene view
         /// </summary>
         /// <param name="sv"></param>
-        private static void DrawHUD(SceneView sv)
+        /// <param name="settings"></param>
+        private static void DrawHUD(SceneView sv, SceneViewDebugSettings settings)
         {
             var cam = sv.camera;
             var e = Event.current;
@@ -146,13 +155,16 @@ namespace SceneRotationToolkit.Editor
                 $"2D Mode (Unity): {sv.in2DMode}   Ortho: {sv.orthographic}   isRotationLocked: {sv.isRotationLocked}\n" +
                 zoomLine;
 
-            string text =
-                $"{toolState}\n" +
-                $"{mode}\n" +
-                $"{pivot}\n" +
-                $"{basis}\n" +
-                $"{camBasis}\n" +
-                $"{inputState}";
+            System.Text.StringBuilder sb = new System.Text.StringBuilder(512);
+
+            if (settings.hudToolState) sb.AppendLine(toolState);
+            if (settings.hudMode) sb.AppendLine(mode);
+            if (settings.hudPivot) sb.AppendLine(pivot);
+            if (settings.hudSceneBasis) sb.AppendLine(basis);
+            if (settings.hudCameraBasis) sb.AppendLine(camBasis);
+            if (settings.hudInputState) sb.AppendLine(inputState);
+
+            string text = sb.ToString().TrimEnd();
 
             Handles.BeginGUI();
             var style = new GUIStyle(EditorStyles.miniLabel)
@@ -167,7 +179,7 @@ namespace SceneRotationToolkit.Editor
             rect.height = style.CalcHeight(new GUIContent(text), width) + 12;
 
             // Slight translucent background
-            var bg = new Color(0, 0, 0, 0.55f);
+            var bg = new Color(0, 0, 0, settings.hudOpacity);
             EditorGUI.DrawRect(rect, bg);
 
             // Text

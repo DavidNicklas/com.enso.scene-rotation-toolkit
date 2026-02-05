@@ -33,6 +33,13 @@ namespace SceneRotationToolkit.Editor
         static SceneViewState()
         {
             Load();
+
+            // Enable the controller to get the custom orbit and pan
+            if (EnableTool)
+            {
+                SceneViewController.Toggle(EnableTool);
+            }
+
             EditorApplication.delayCall += ApplyToLastSceneView;
         }
 
