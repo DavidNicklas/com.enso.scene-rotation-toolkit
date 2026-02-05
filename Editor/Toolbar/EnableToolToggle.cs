@@ -6,11 +6,11 @@ using UnityEngine.UIElements;
 namespace SceneRotationToolkit.Editor
 {
     [EditorToolbarElement(ID, typeof(SceneView))]
-    public class EnableTool : EditorToolbarToggle
+    public class EnableToolToggle : EditorToolbarToggle
     {
         public const string ID = "SceneRotationToolkit/Enable";
 
-        public EnableTool()
+        public EnableToolToggle()
         {
             SceneViewState.onChanged += Sync;
 

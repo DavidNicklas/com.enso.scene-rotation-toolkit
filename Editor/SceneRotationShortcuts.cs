@@ -49,7 +49,7 @@ namespace SceneRotationToolkit.Editor
         [Shortcut(TOGGLE_2D_SHORTCUT_ID, typeof(SceneView), KeyCode.Alpha5)]
         public static void ToggleFake2D()
         {
-            if (SceneViewState.EnableTool) SceneViewState.ToggleFake2DMode();
+            if (SceneViewState.EnableTool) SceneViewState.Toggle2DMode();
         }
 
         public static string GetShortcutName(ShortcutTypes type)

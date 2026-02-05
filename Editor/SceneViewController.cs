@@ -7,13 +7,11 @@ namespace SceneRotationToolkit.Editor
     {
         private static void OnSceneGUI(SceneView sv)
         {
-            SceneViewDebugHUD.Draw(sv);
-
             if (!SceneViewState.EnableTool) return;
 
             var e = Event.current;
 
-            if (SceneViewState.Fake2DMode)
+            if (SceneViewState.Is2DMode)
             {
                 Fake2DModeController.Handle(sv, e);
                 return;

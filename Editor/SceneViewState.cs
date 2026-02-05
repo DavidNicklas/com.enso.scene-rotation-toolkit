@@ -9,7 +9,7 @@ namespace SceneRotationToolkit.Editor
     public static class SceneRotationPrefs
     {
         public const string Z_ROTATION = "SceneRotationToolkit.ZRotation";
-        public const string FAKE_2D = "SceneRotationToolkit.Fake2D";
+        public const string IS_2D_MODE = "SceneRotationToolkit.Is2DMode";
         public const string ENABLE = "SceneRotationToolkit.Enable";
     }
 
@@ -19,7 +19,7 @@ namespace SceneRotationToolkit.Editor
         /// Stores the base Z rotation of the scene view camera
         /// </summary>
         public static float SceneZRotation { get; private set; }
-        public static bool Fake2DMode { get; private set; }
+        public static bool Is2DMode { get; private set; }
         public static bool EnableTool { get; private set; }
 
         public static event Action onChanged;
@@ -54,11 +54,11 @@ namespace SceneRotationToolkit.Editor
             onChanged?.Invoke();
         }
 
-        public static void ToggleFake2DMode()
+        public static void Toggle2DMode()
         {
-            Fake2DMode = !Fake2DMode;
+            Is2DMode = !Is2DMode;
             Save();
-            Apply(SceneView.lastActiveSceneView, $"2D Mode: {Fake2DMode}");
+            Apply(SceneView.lastActiveSceneView, $"2D Mode: {Is2DMode}");
             onChanged?.Invoke();
         }
 
@@ -76,7 +76,7 @@ namespace SceneRotationToolkit.Editor
         private static void ResetToDefaults()
         {
             SceneZRotation = SOUTH_Z_ROTATION_ANGLE;
-            Fake2DMode = false;
+            Is2DMode = false;
             Apply(SceneView.lastActiveSceneView);
         }
 
@@ -136,9 +136,14 @@ namespace SceneRotationToolkit.Editor
             if (sv == null) return;
 
             sv.in2DMode = false;
-            sv.orthographic = Fake2DMode;
+            sv.isRotationLocked = Is2DMode;
+            sv.orthographic = Is2DMode;
 
-            sv.isRotationLocked = Fake2DMode;
+            sv.TryGetOverlay("Orientation", out var overlay);
+            if (overlay != null)
+            {
+                overlay.displayed = !Is2DMode;
+            }
 
             Vector3 forward = Vector3.forward;
             Vector3 up = Quaternion.AngleAxis(SceneZRotation, forward) * Vector3.up;
@@ -160,14 +165,14 @@ namespace SceneRotationToolkit.Editor
 
         private static void Load()
         {
-            Fake2DMode = EditorPrefs.GetBool(SceneRotationPrefs.FAKE_2D, false);
+            Is2DMode = EditorPrefs.GetBool(SceneRotationPrefs.IS_2D_MODE, false);
             SceneZRotation = EditorPrefs.GetFloat(SceneRotationPrefs.Z_ROTATION, 0f);
             EnableTool = EditorPrefs.GetBool(SceneRotationPrefs.ENABLE, EnableTool);
         }
 
         private static void Save()
         {
-            EditorPrefs.SetBool(SceneRotationPrefs.FAKE_2D, Fake2DMode);
+            EditorPrefs.SetBool(SceneRotationPrefs.IS_2D_MODE, Is2DMode);
             EditorPrefs.SetFloat(SceneRotationPrefs.Z_ROTATION, SceneZRotation);
             EditorPrefs.SetBool(SceneRotationPrefs.ENABLE, EnableTool);
         }

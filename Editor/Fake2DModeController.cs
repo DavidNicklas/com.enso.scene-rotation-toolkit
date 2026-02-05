@@ -11,7 +11,7 @@ namespace SceneRotationToolkit.Editor
 
         public static void Handle(SceneView sv, Event e)
         {
-            if (!SceneViewState.Fake2DMode) return;
+            if (!SceneViewState.Is2DMode) return;
             if (sv.in2DMode) return;
 
             // Don't interfere with handles (Rect tool resizing, etc.)

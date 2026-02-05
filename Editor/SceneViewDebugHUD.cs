@@ -6,14 +6,21 @@ namespace SceneRotationToolkit.Editor
 {
     public static class SceneViewDebugHUD
     {
-        // For possible Toggle On/Off
-        public static bool Enabled => true;
+        private static bool enabled;
 
         private const float PIVOT_GIZMO_THICKNESS = 1.5f;
 
-        public static void Draw(SceneView sv)
+        public static void Toggle()
         {
-            if (!Enabled || sv == null || !SceneViewState.EnableTool) return;
+            enabled = !enabled;
+
+            if (enabled) SceneView.duringSceneGui += Draw;
+            else SceneView.duringSceneGui -= Draw;
+        }
+
+        private static void Draw(SceneView sv)
+        {
+            if (sv == null) return;
 
             var cam = sv.camera;
             if (cam == null) return;
@@ -118,7 +125,7 @@ namespace SceneRotationToolkit.Editor
             string zoomLine = $"CamDist: {camDist:0.###}";
 
             string toolState =
-                $"EnableTool: {SceneViewState.EnableTool}   Fake2D: {SceneViewState.Fake2DMode}   SceneZ: {SceneViewState.SceneZRotation:0}°";
+                $"EnableTool: {SceneViewState.EnableTool}   Fake2D: {SceneViewState.Is2DMode}   SceneZ: {SceneViewState.SceneZRotation:0}°";
 
             string inputState =
                 $"Mouse: {e.type} btn:{e.button} alt:{e.alt} shift:{e.shift} ctrl:{e.control} cmd:{e.command} " +

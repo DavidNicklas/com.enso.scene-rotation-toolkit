@@ -11,10 +11,10 @@ namespace SceneRotationToolkit.Editor
         public SceneRotationToolbar()
             : base
             (
-                EnableTool.ID,
+                EnableToolToggle.ID,
                 SceneRotationOptionsDropdown.ID,
                 Fake2DToggle.ID,
-                SceneRotationSettings.ID
+                SceneRotationToolkitDebugSettingsMenu.ID
             ) {}
     }
 }

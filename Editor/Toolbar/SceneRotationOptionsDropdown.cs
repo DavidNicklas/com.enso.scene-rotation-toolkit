@@ -1,5 +1,4 @@
 using UnityEditor;
-using UnityEditor.ShortcutManagement;
 using UnityEditor.Toolbars;
 using UnityEngine;
 using UnityEngine.UIElements;
@@ -43,8 +42,8 @@ namespace SceneRotationToolkit.Editor
 
             menu.AddItem(
                 new GUIContent($"Toggle Fake 2D Mode\t{SceneRotationShortcuts.GetShortcutName(ShortcutTypes.ToggleFake2D)}"),
-                SceneViewState.Fake2DMode,
-                SceneViewState.ToggleFake2DMode
+                SceneViewState.Is2DMode,
+                SceneViewState.Toggle2DMode
             );
 
             menu.ShowAsContext();
