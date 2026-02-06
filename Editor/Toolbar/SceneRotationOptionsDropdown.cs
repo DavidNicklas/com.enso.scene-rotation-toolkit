@@ -41,7 +41,7 @@ namespace SceneRotationToolkit.Editor
             menu.AddSeparator("");
 
             menu.AddItem(
-                new GUIContent($"Toggle Fake 2D Mode\t{SceneRotationShortcuts.GetShortcutName(ShortcutTypes.ToggleFake2D)}"),
+                new GUIContent($"Toggle Fake 2D Mode\t{SceneRotationShortcuts.GetShortcutName(ShortcutTypes.Toggle2DMode)}"),
                 SceneViewState.Is2DMode,
                 SceneViewState.Toggle2DMode
             );

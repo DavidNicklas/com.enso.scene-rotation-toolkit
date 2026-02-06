@@ -5,7 +5,7 @@ using UnityEngine;
 
 namespace SceneRotationToolkit.Editor
 {
-    public enum ShortcutTypes { ToggleTool, ToggleFake2D, RotateSouth, RotateNorth, RotateWest, RotateEast }
+    public enum ShortcutTypes { ToggleTool, Toggle2DMode, RotateSouth, RotateNorth, RotateWest, RotateEast }
 
     public static class SceneRotationShortcuts
     {
@@ -14,7 +14,7 @@ namespace SceneRotationToolkit.Editor
         private const string ROTATE_EAST_SHORTCUT_ID = "Scene Rotation Toolkit/East";
         private const string ROTATE_NORTH_SHORTCUT_ID = "Scene Rotation Toolkit/North";
         private const string ROTATE_WEST_SHORTCUT_ID = "Scene Rotation Toolkit/West";
-        private const string TOGGLE_2D_SHORTCUT_ID = "Scene Rotation Toolkit/Toggle Fake 2D";
+        private const string TOGGLE_2D_SHORTCUT_ID = "Scene Rotation Toolkit/Toggle 2D Mode";
 
         [Shortcut(TOGGLE_TOOL_SHORTCUT_ID, typeof(SceneView), KeyCode.R, ShortcutModifiers.Alt)]
         private static void ToggleToolShortcut()
@@ -47,7 +47,7 @@ namespace SceneRotationToolkit.Editor
         }
 
         [Shortcut(TOGGLE_2D_SHORTCUT_ID, typeof(SceneView), KeyCode.Alpha5)]
-        public static void ToggleFake2D()
+        public static void Toggle2DMode()
         {
             if (SceneViewState.EnableTool) SceneViewState.Toggle2DMode();
         }
@@ -57,7 +57,7 @@ namespace SceneRotationToolkit.Editor
             string id = type switch
             {
                 ShortcutTypes.ToggleTool => TOGGLE_TOOL_SHORTCUT_ID,
-                ShortcutTypes.ToggleFake2D => TOGGLE_2D_SHORTCUT_ID,
+                ShortcutTypes.Toggle2DMode => TOGGLE_2D_SHORTCUT_ID,
                 ShortcutTypes.RotateSouth => ROTATE_SOUTH_SHORTCUT_ID,
                 ShortcutTypes.RotateNorth => ROTATE_NORTH_SHORTCUT_ID,
                 ShortcutTypes.RotateWest => ROTATE_WEST_SHORTCUT_ID,

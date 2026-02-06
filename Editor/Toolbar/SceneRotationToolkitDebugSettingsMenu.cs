@@ -17,7 +17,7 @@ namespace SceneRotationToolkit.Editor
             tooltip = "Toggle Debug Infos";
 
             this.RegisterValueChangedCallback(OnToggleChanged);
-            dropdownClicked += OnClicked;
+            dropdownClicked += OnDropdownClicked;
         }
 
         private void OnToggleChanged(ChangeEvent<bool> evt)
@@ -25,7 +25,7 @@ namespace SceneRotationToolkit.Editor
             SceneViewDebugHUD.Toggle();
         }
 
-        private void OnClicked()
+        private void OnDropdownClicked()
         {
             var popUp = new SceneViewDebugSettingsPopUp();
             var mousePosition = Event.current.mousePosition;
