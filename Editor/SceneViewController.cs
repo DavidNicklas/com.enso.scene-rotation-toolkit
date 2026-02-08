@@ -22,10 +22,7 @@ namespace SceneRotationToolkit.Editor
 
         public static void Toggle(bool enableTool)
         {
-            if (enableTool)
-            {
-                SceneView.duringSceneGui += OnSceneGUI;
-            }
+            if (enableTool) SceneView.duringSceneGui += OnSceneGUI;
             else SceneView.duringSceneGui -= OnSceneGUI;
         }
     }

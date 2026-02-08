@@ -6,13 +6,6 @@ namespace SceneRotationToolkit.Editor
 {
     public enum RotationState { South, North, East, West }
 
-    public static class SceneRotationPrefs
-    {
-        public const string Z_ROTATION = "SceneRotationToolkit.ZRotation";
-        public const string IS_2D_MODE = "SceneRotationToolkit.Is2DMode";
-        public const string ENABLE = "SceneRotationToolkit.Enable";
-    }
-
     public static class SceneViewState
     {
         /// <summary>
@@ -29,35 +22,34 @@ namespace SceneRotationToolkit.Editor
         private const float EAST_Z_ROTATION_ANGLE = 90f;
         private const float WEST_Z_ROTATION_ANGLE = 270f;
 
+        private static class SceneRotationPrefs
+        {
+            public const string Z_ROTATION = "SceneRotationToolkit.ZRotation";
+            public const string IS_2D_MODE = "SceneRotationToolkit.Is2DMode";
+            public const string ENABLE = "SceneRotationToolkit.Enable";
+        }
 
         static SceneViewState()
         {
             Load();
 
-            // Enable the controller to get the custom orbit and pan
-            if (EnableTool)
-            {
-                SceneViewController.Toggle(EnableTool);
-            }
+            if (EnableTool) SceneViewController.Toggle(EnableTool);
 
             EditorApplication.delayCall += ApplyToLastSceneView;
         }
 
         private static void ApplyToLastSceneView()
         {
-            Apply(SceneView.lastActiveSceneView);
+            SceneViewCameraUtility.ApplyState(SceneView.lastActiveSceneView, Is2DMode, SceneZRotation);
         }
 
         public static void SetRotation(RotationState stateEnum)
         {
-            if (Mathf.Approximately(SceneZRotation, GetRotationValue(stateEnum)))
-            {
-                return;
-            }
+            if (Mathf.Approximately(SceneZRotation, GetRotationValue(stateEnum))) return;
 
             SceneZRotation = GetRotationValue(stateEnum);
             Save();
-            Apply(SceneView.lastActiveSceneView, $"Rotate to: {stateEnum.ToString()}");
+            SceneViewCameraUtility.ApplyState(SceneView.lastActiveSceneView, Is2DMode, SceneZRotation, $"Rotate to: {stateEnum.ToString()}");
             onChanged?.Invoke();
         }
 
@@ -65,7 +57,7 @@ namespace SceneRotationToolkit.Editor
         {
             Is2DMode = !Is2DMode;
             Save();
-            Apply(SceneView.lastActiveSceneView, $"2D Mode: {Is2DMode}");
+            SceneViewCameraUtility.ApplyState(SceneView.lastActiveSceneView, Is2DMode, SceneZRotation, $"2D Mode: {Is2DMode}");
             onChanged?.Invoke();
         }
 
@@ -84,7 +76,7 @@ namespace SceneRotationToolkit.Editor
         {
             SceneZRotation = SOUTH_Z_ROTATION_ANGLE;
             Is2DMode = false;
-            Apply(SceneView.lastActiveSceneView);
+            SceneViewCameraUtility.ApplyState(SceneView.lastActiveSceneView, Is2DMode, SceneZRotation);
         }
 
         /// <summary>
@@ -131,43 +123,6 @@ namespace SceneRotationToolkit.Editor
             }
 
             return RotationState.South;
-        }
-
-        /// <summary>
-        /// Applies the new rotation to the scene view camera
-        /// </summary>
-        /// <param name="sv">the scene view to apply the rotation to</param>
-        /// <param name="notificationMessage">message to show</param>
-        private static void Apply(SceneView sv, string notificationMessage = "")
-        {
-            if (sv == null) return;
-
-            sv.in2DMode = false;
-            sv.isRotationLocked = Is2DMode;
-            sv.orthographic = Is2DMode;
-
-            sv.TryGetOverlay("Orientation", out var overlay);
-            if (overlay != null)
-            {
-                overlay.displayed = !Is2DMode;
-            }
-
-            Vector3 forward = Vector3.forward;
-            Vector3 up = Quaternion.AngleAxis(SceneZRotation, forward) * Vector3.up;
-
-            sv.LookAt(
-                sv.pivot,
-                Quaternion.LookRotation(forward, up),
-                sv.size,
-                sv.orthographic,
-                false
-            );
-
-            if (!string.IsNullOrEmpty(notificationMessage))
-            {
-                sv.ShowNotification(new GUIContent(notificationMessage), 1.5f);
-            }
-            sv.Repaint();
         }
 
         private static void Load()

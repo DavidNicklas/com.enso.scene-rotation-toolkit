@@ -2,8 +2,9 @@
     "name": "com.enso.scene-rotation-toolkit",
     "displayName": "Scene Rotation Toolkit",
     "author": "David Nicklas",
-    "version": "0.1.0",
+    "version": "0.2.0",
     "unity": "6000.0",
+    "description": "This tool is used for rotating the scene view in different angles (90, 180, 270, 0) and restore the default behaviour of Unity's orbit and pan. There is also a custom 2D mode and additional debug settings to help the user.",
     "type": "library",
     "keywords": [
         "scene view",

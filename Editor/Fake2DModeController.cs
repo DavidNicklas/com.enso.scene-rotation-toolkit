@@ -5,8 +5,6 @@ namespace SceneRotationToolkit.Editor
 {
     public static class Fake2DModeController
     {
-        private static Tool prevTool;
-        private static ViewTool prevViewTool;
         private static bool switched;
 
         public static void Handle(SceneView sv, Event e)
@@ -15,8 +13,7 @@ namespace SceneRotationToolkit.Editor
             if (sv.in2DMode) return;
 
             // Don't interfere with handles (Rect tool resizing, etc.)
-            if (GUIUtility.hotControl != 0 || HandleUtility.nearestControl != 0)
-                return;
+            if (GUIUtility.hotControl != 0 || HandleUtility.nearestControl != 0) return;
 
             bool alt = (e.modifiers & EventModifiers.Alt) != 0;
 
@@ -36,10 +33,9 @@ namespace SceneRotationToolkit.Editor
 
             if (panDown)
             {
-                prevTool = Tools.current;
-                prevViewTool = Tools.viewTool;
+                ToolUtility.StoreCurrentToolState();
+                ToolUtility.SetTool(Tool.View, ViewTool.Pan);
 
-                SetPanTool();
                 switched = true;
 
                 // Don't Use() because Unity needs this event to pan
@@ -49,26 +45,17 @@ namespace SceneRotationToolkit.Editor
             if (panDrag)
             {
                 // Keep forcing during drag so Unity doesn't revert
-                if (switched)
-                {
-                    SetPanTool();
-                }
+                if (switched) ToolUtility.SetTool(Tool.View, ViewTool.Pan);
+
                 return;
             }
 
             if (panUp)
             {
                 // reset the tool if input is over
-                Tools.current = prevTool;
-                Tools.viewTool = prevViewTool;
+                ToolUtility.RestorePreviousToolState();
                 switched = false;
             }
-        }
-
-        private static void SetPanTool()
-        {
-            Tools.current = Tool.View;
-            Tools.viewTool = ViewTool.Pan;
         }
     }
 }
