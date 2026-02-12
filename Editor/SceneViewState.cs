@@ -32,6 +32,15 @@ namespace SceneRotationToolkit.Editor
         static SceneViewState()
         {
             Load();
+
+            if (EnableTool) SceneViewController.Toggle(EnableTool);
+
+            EditorApplication.delayCall += ApplyToLastSceneView;
+        }
+
+        private static void ApplyToLastSceneView()
+        {
+            SceneViewCameraUtility.ApplyState(SceneView.lastActiveSceneView, Is2DMode, SceneZRotation);
         }
 
         public static void SetRotation(RotationState stateEnum)
@@ -40,6 +49,7 @@ namespace SceneRotationToolkit.Editor
 
             SceneZRotation = GetRotationValue(stateEnum);
             Save();
+            SceneViewCameraUtility.ApplyState(SceneView.lastActiveSceneView, Is2DMode, SceneZRotation, $"Rotate to: {stateEnum.ToString()}");
             onChanged?.Invoke();
         }
 
@@ -47,6 +57,7 @@ namespace SceneRotationToolkit.Editor
         {
             Is2DMode = !Is2DMode;
             Save();
+            SceneViewCameraUtility.ApplyState(SceneView.lastActiveSceneView, Is2DMode, SceneZRotation, $"2D Mode: {Is2DMode}");
             onChanged?.Invoke();
         }
 
@@ -55,6 +66,9 @@ namespace SceneRotationToolkit.Editor
             EnableTool = !EnableTool;
             ResetToDefaults();
             Save();
+
+            SceneViewController.Toggle(EnableTool);
+
             onChanged?.Invoke();
         }
 
@@ -62,6 +76,7 @@ namespace SceneRotationToolkit.Editor
         {
             SceneZRotation = SOUTH_Z_ROTATION_ANGLE;
             Is2DMode = false;
+            SceneViewCameraUtility.ApplyState(SceneView.lastActiveSceneView, Is2DMode, SceneZRotation);
         }
 
         /// <summary>
@@ -125,3 +140,4 @@ namespace SceneRotationToolkit.Editor
         }
     }
 }
+

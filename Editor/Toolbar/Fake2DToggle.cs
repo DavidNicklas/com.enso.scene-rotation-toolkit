@@ -18,7 +18,7 @@ namespace SceneRotationToolkit.Editor
 
             this.RegisterValueChangedCallback(_ =>
             {
-                SceneRotationApplicationController.Toggle2DMode();
+                SceneViewState.Toggle2DMode();
             });
 
             SceneViewState.onChanged += Sync;

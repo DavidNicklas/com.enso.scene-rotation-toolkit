@@ -19,37 +19,37 @@ namespace SceneRotationToolkit.Editor
         [Shortcut(TOGGLE_TOOL_SHORTCUT_ID, typeof(SceneView), KeyCode.R, ShortcutModifiers.Alt)]
         private static void ToggleToolShortcut()
         {
-            SceneRotationApplicationController.ToggleTool();
+            SceneViewState.ToggleTool();
         }
 
         [Shortcut(ROTATE_SOUTH_SHORTCUT_ID, typeof(SceneView), KeyCode.Alpha1)]
         public static void RotateSouth()
         {
-            if (SceneViewState.EnableTool) SceneRotationApplicationController.SetRotation(RotationState.South);
+            if (SceneViewState.EnableTool) SceneViewState.SetRotation(RotationState.South);
         }
 
         [Shortcut(ROTATE_EAST_SHORTCUT_ID, typeof(SceneView), KeyCode.Alpha2)]
         public static void RotateEast()
         {
-            if (SceneViewState.EnableTool) SceneRotationApplicationController.SetRotation(RotationState.East);
+            if (SceneViewState.EnableTool) SceneViewState.SetRotation(RotationState.East);
         }
 
         [Shortcut(ROTATE_NORTH_SHORTCUT_ID, typeof(SceneView), KeyCode.Alpha3)]
         public static void RotateNorth()
         {
-            if (SceneViewState.EnableTool) SceneRotationApplicationController.SetRotation(RotationState.North);
+            if (SceneViewState.EnableTool) SceneViewState.SetRotation(RotationState.North);
         }
 
         [Shortcut(ROTATE_WEST_SHORTCUT_ID, typeof(SceneView), KeyCode.Alpha4)]
         public static void RotateWest()
         {
-            if (SceneViewState.EnableTool) SceneRotationApplicationController.SetRotation(RotationState.West);
+            if (SceneViewState.EnableTool) SceneViewState.SetRotation(RotationState.West);
         }
 
         [Shortcut(TOGGLE_2D_SHORTCUT_ID, typeof(SceneView), KeyCode.Alpha5)]
         public static void Toggle2DMode()
         {
-            if (SceneViewState.EnableTool) SceneRotationApplicationController.Toggle2DMode();
+            if (SceneViewState.EnableTool) SceneViewState.Toggle2DMode();
         }
 
         public static string GetShortcutName(ShortcutTypes type)
