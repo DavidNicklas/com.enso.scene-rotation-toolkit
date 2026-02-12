@@ -21,7 +21,7 @@ namespace SceneRotationToolkit.Editor
 
             this.RegisterValueChangedCallback(_ =>
             {
-                SceneViewState.ToggleTool();
+                SceneRotationApplicationController.ToggleTool();
                 Sync();
             });
 
