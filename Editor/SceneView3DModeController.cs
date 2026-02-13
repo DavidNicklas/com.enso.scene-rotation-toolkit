@@ -3,11 +3,11 @@ using UnityEngine;
 
 namespace SceneRotationToolkit.Editor
 {
-    /// <summary>
-    /// Routes SceneView input to either Orbit or FPS controller (SRP: routing only).
-    /// </summary>
     public static class SceneView3DModeController
     {
+        private static readonly SceneViewOrbitController OrbitController = new();
+        private static readonly SceneViewFPSController SceneViewFPSController = new();
+
         public static void Handle(SceneView sv, Event e)
         {
             if (sv == null) return;
@@ -23,9 +23,9 @@ namespace SceneRotationToolkit.Editor
                     return;
             }
 
-            if (SceneViewOrbitController.IsRelevant(e))
+            if (OrbitController.IsRelevant(e))
             {
-                SceneViewOrbitController.Handle(sv, e);
+                OrbitController.Handle(sv, e);
             }
         }
     }

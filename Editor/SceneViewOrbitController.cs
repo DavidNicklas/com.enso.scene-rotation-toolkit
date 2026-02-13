@@ -3,13 +3,13 @@ using UnityEngine;
 
 namespace SceneRotationToolkit.Editor
 {
-    public static class SceneViewOrbitController
+    public class SceneViewOrbitController
     {
-        private static int orbitControlId;
-        private static float yawSign = 1f;
+        private int orbitControlId;
+        private float yawSign = 1f;
         private const float SENSITIVITY = 0.003f * Mathf.Rad2Deg;
 
-        public static bool IsRelevant(Event e)
+        public bool IsRelevant(Event e)
         {
             return e.alt && !e.shift && e.button == 0 &&
                    (e.type == EventType.Layout ||
@@ -20,7 +20,7 @@ namespace SceneRotationToolkit.Editor
                     e.type == EventType.Ignore);
         }
 
-        public static void Handle(SceneView sv, Event e)
+        public void Handle(SceneView sv, Event e)
         {
             if (orbitControlId == 0)
                 orbitControlId = GUIUtility.GetControlID(FocusType.Passive);
@@ -66,17 +66,17 @@ namespace SceneRotationToolkit.Editor
             }
         }
 
-        private static bool EndOrbitOutOfSceneView(Event e)
+        private bool EndOrbitOutOfSceneView(Event e)
         {
             return GUIUtility.hotControl == orbitControlId &&
                    (!e.alt || e.type == EventType.MouseLeaveWindow || e.type == EventType.Ignore);
         }
 
-        private static bool IsStart(Event e) => e.type == EventType.MouseDown && e.alt && !e.shift && e.button == 0;
-        private static bool IsDrag(Event e)  => e.type == EventType.MouseDrag && e.alt && !e.shift && e.button == 0;
-        private static bool IsEnd(Event e)   => e.type == EventType.MouseUp   && e.alt && !e.shift && e.button == 0;
+        private bool IsStart(Event e) => e.type == EventType.MouseDown && e.alt && !e.shift && e.button == 0;
+        private bool IsDrag(Event e)  => e.type == EventType.MouseDrag && e.alt && !e.shift && e.button == 0;
+        private bool IsEnd(Event e)   => e.type == EventType.MouseUp   && e.alt && !e.shift && e.button == 0;
 
-        private static void PerformOrbit(SceneView sv, Event e)
+        private void PerformOrbit(SceneView sv, Event e)
         {
             Quaternion rot = sv.rotation;
 
@@ -91,7 +91,7 @@ namespace SceneRotationToolkit.Editor
             sv.rotation = rot;
         }
 
-        private static void UpdateYawSign(SceneView sv)
+        private void UpdateYawSign(SceneView sv)
         {
             Vector3 sceneUp = Quaternion.AngleAxis(SceneViewState.SceneZRotation, Vector3.forward) * Vector3.up;
 
@@ -99,7 +99,7 @@ namespace SceneRotationToolkit.Editor
             if (Mathf.Approximately(yawSign, 0f)) yawSign = 1f;
         }
 
-        private static void ForceEnd(Event e)
+        private void ForceEnd(Event e)
         {
             GUIUtility.hotControl = 0;
             ToolUtility.RestorePreviousToolState();

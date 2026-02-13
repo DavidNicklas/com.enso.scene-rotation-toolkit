@@ -3,23 +3,23 @@ using UnityEngine;
 
 namespace SceneRotationToolkit.Editor
 {
-    public static class SceneViewFPSController
+    public class SceneViewFPSController
     {
-        private static int fpsControlId;
+        private int fpsControlId;
 
-        public static bool IsActive { get; private set; }
+        public bool IsActive { get; private set; }
 
-        private static bool wKey, aKey, sKey, dKey, qKey, eKey, shiftKey;
+        private bool wKey, aKey, sKey, dKey, qKey, eKey, shiftKey;
 
-        private static Quaternion rot;
-        private static double lastTime;
+        private Quaternion rot;
+        private double lastTime;
 
         private const float MOUSE_SENSITIVITY = 0.003f * Mathf.Rad2Deg;
         private const float BASE_SPEED = 7.0f;
         private const float SHIFT_MULTIPLIER = 3.0f;
         private const float THRESHOLD = 0.0001f;
 
-        public static bool IsRelevant(Event e)
+        public bool IsRelevant(Event e)
         {
             // RMB mouse events (start/drag/end) + key events while active
             if (e.button == 1 &&
@@ -37,7 +37,7 @@ namespace SceneRotationToolkit.Editor
             return false;
         }
 
-        public static bool Handle(SceneView sv, Event e)
+        public bool Handle(SceneView sv, Event e)
         {
             if (fpsControlId == 0)
                 fpsControlId = GUIUtility.GetControlID(FocusType.Passive);
@@ -91,11 +91,11 @@ namespace SceneRotationToolkit.Editor
             return IsActive;
         }
 
-        private static bool IsStart(Event e) => e.button == 1 && e.type == EventType.MouseDown;
-        private static bool IsDrag(Event e) => e.button == 1 && e.type == EventType.MouseDrag;
-        private static bool IsEnd(Event e) => e.button == 1 && (e.type == EventType.MouseUp || e.type == EventType.MouseLeaveWindow || e.type == EventType.Ignore);
+        private bool IsStart(Event e) => e.button == 1 && e.type == EventType.MouseDown;
+        private bool IsDrag(Event e) => e.button == 1 && e.type == EventType.MouseDrag;
+        private bool IsEnd(Event e) => e.button == 1 && (e.type == EventType.MouseUp || e.type == EventType.MouseLeaveWindow || e.type == EventType.Ignore);
 
-        private static bool IsMovementKey(Event e)
+        private bool IsMovementKey(Event e)
         {
             return e.keyCode switch
             {
@@ -105,7 +105,7 @@ namespace SceneRotationToolkit.Editor
             };
         }
 
-        private static void UpdateKeyState(Event e)
+        private void UpdateKeyState(Event e)
         {
             bool down = e.type == EventType.KeyDown;
 
@@ -121,7 +121,7 @@ namespace SceneRotationToolkit.Editor
             }
         }
 
-        private static void Start(SceneView sv)
+        private void Start(SceneView sv)
         {
             if (IsActive) return;
 
@@ -141,7 +141,7 @@ namespace SceneRotationToolkit.Editor
             EditorApplication.update += Tick;
         }
 
-        private static void End()
+        private void End()
         {
             if (!IsActive) return;
 
@@ -157,7 +157,7 @@ namespace SceneRotationToolkit.Editor
             EditorApplication.update -= Tick;
         }
 
-        private static void Tick()
+        private void Tick()
         {
             if (!IsActive) return;
 
@@ -205,7 +205,7 @@ namespace SceneRotationToolkit.Editor
             sv.Repaint();
         }
 
-        private static void ApplyMouseLook(SceneView sv, Event e)
+        private void ApplyMouseLook(SceneView sv, Event e)
         {
             if (e.type != EventType.MouseDrag) return;
 
@@ -230,7 +230,7 @@ namespace SceneRotationToolkit.Editor
             sv.Repaint();
         }
 
-        private static Vector3 GetSceneUp()
+        private Vector3 GetSceneUp()
         {
             return Quaternion.AngleAxis(SceneViewState.SceneZRotation, Vector3.forward) * Vector3.up;
         }
