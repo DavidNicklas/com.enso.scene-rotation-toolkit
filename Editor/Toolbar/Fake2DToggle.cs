@@ -22,6 +22,7 @@ namespace SceneRotationToolkit.Editor
             });
 
             SceneViewState.onChanged += Sync;
+            RegisterCallback<DetachFromPanelEvent>(_ => SceneViewState.onChanged -= Sync);
             Sync();
         }
 

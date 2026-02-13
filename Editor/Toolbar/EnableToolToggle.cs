@@ -12,8 +12,6 @@ namespace SceneRotationToolkit.Editor
 
         public EnableToolToggle()
         {
-            SceneViewState.onChanged += Sync;
-
             text = "Enable";
             tooltip = "Enable the tool and the custom orbit/pan logic";
             onIcon = EditorGUIUtility.IconContent("d_GreenCheckmark").image as Texture2D;
@@ -22,9 +20,10 @@ namespace SceneRotationToolkit.Editor
             this.RegisterValueChangedCallback(_ =>
             {
                 SceneViewState.ToggleTool();
-                Sync();
             });
 
+            SceneViewState.onChanged += Sync;
+            RegisterCallback<DetachFromPanelEvent>(_ => SceneViewState.onChanged -= Sync);
             Sync();
         }
 

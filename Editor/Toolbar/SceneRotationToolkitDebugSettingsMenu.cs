@@ -18,6 +18,7 @@ namespace SceneRotationToolkit.Editor
 
             this.RegisterValueChangedCallback(OnToggleChanged);
             dropdownClicked += OnDropdownClicked;
+            RegisterCallback<DetachFromPanelEvent>(_ => dropdownClicked -= OnDropdownClicked);
         }
 
         private void OnToggleChanged(ChangeEvent<bool> evt)

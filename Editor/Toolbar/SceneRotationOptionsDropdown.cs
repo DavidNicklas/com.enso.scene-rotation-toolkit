@@ -16,14 +16,17 @@ namespace SceneRotationToolkit.Editor
             icon = EditorGUIUtility.IconContent("RotateTool").image as Texture2D;
 
             clicked += ShowMenu;
+            RegisterCallback<DetachFromPanelEvent>(_ => clicked -= ShowMenu);
 
             SceneViewState.onChanged += UpdateAppearance;
+            RegisterCallback<DetachFromPanelEvent>(_ => SceneViewState.onChanged -= UpdateAppearance);
+
             UpdateAppearance();
         }
 
         private void UpdateAppearance()
         {
-            text = $"{SceneViewState.GetState().ToString()}";
+            text = $"{SceneViewState.GetRotationState().ToString()}";
             style.display = SceneViewState.EnableTool ? DisplayStyle.Flex : DisplayStyle.None;
         }
 

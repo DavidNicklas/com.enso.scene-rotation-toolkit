@@ -8,36 +8,40 @@ namespace SceneRotationToolkit.Editor
     {
         public override VisualElement CreateGUI()
         {
-            var settings = SceneViewDebugSettings.instance;
 
-            var root = new VisualElement();
-            root.style.paddingLeft = 8;
-            root.style.paddingRight = 8;
-            root.style.paddingTop = 8;
-            root.style.paddingBottom = 8;
+            var root = new VisualElement
+            {
+                style =
+                {
+                    paddingLeft = 8,
+                    paddingRight = 8,
+                    paddingTop = 8,
+                    paddingBottom = 8
+                }
+            };
 
             root.Add(Header("Debug HUD"));
 
-            root.Add(Toggle("Pivot gizmo", settings.showPivotGizmo, v => { settings.showPivotGizmo = v; ApplySettingChange(settings); }));
-            root.Add(Toggle("Rotation badge", settings.showRotationBadge, v => { settings.showRotationBadge = v; ApplySettingChange(settings); }));
-            root.Add(Toggle("HUD panel", settings.showHud, v => { settings.showHud = v; ApplySettingChange(settings); }));
+            root.Add(Toggle("Pivot gizmo", SceneViewDebugSettings.ShowPivotGizmo, v => { SceneViewDebugSettings.ShowPivotGizmo = v; SceneView.RepaintAll(); }));
+            root.Add(Toggle("Rotation badge", SceneViewDebugSettings.ShowRotationBadge, v => { SceneViewDebugSettings.ShowRotationBadge = v; SceneView.RepaintAll(); }));
+            root.Add(Toggle("HUD panel", SceneViewDebugSettings.ShowHud, v => { SceneViewDebugSettings.ShowHud = v; SceneView.RepaintAll(); }));
 
             root.Add(Spacer(6));
             root.Add(Header("HUD sections"));
 
-            root.Add(Toggle("Tool state", settings.hudToolState, state => { settings.hudToolState = state; ApplySettingChange(settings); }));
-            root.Add(Toggle("Mode/zoom", settings.hudMode, state => { settings.hudMode = state; settings.SaveNow(); SceneView.RepaintAll(); }));
-            root.Add(Toggle("Pivot line", settings.hudPivot, state => { settings.hudPivot = state; settings.SaveNow(); SceneView.RepaintAll(); }));
-            root.Add(Toggle("Scene basis", settings.hudSceneBasis, state => { settings.hudSceneBasis = state; settings.SaveNow(); SceneView.RepaintAll(); }));
-            root.Add(Toggle("Camera basis", settings.hudCameraBasis, state => { settings.hudCameraBasis = state; settings.SaveNow(); SceneView.RepaintAll(); }));
-            root.Add(Toggle("Input state", settings.hudInputState, state => { settings.hudInputState = state; settings.SaveNow(); SceneView.RepaintAll(); }));
+            root.Add(Toggle("Tool state", SceneViewDebugSettings.HUDToolState, state => { SceneViewDebugSettings.HUDToolState = state; SceneView.RepaintAll(); }));
+            root.Add(Toggle("Mode/zoom", SceneViewDebugSettings.HUDMode, state => { SceneViewDebugSettings.HUDMode = state; SceneView.RepaintAll(); }));
+            root.Add(Toggle("Pivot line", SceneViewDebugSettings.HUDPivot, state => { SceneViewDebugSettings.HUDPivot = state; SceneView.RepaintAll(); }));
+            root.Add(Toggle("Scene basis", SceneViewDebugSettings.HUDSceneBasis, state => { SceneViewDebugSettings.HUDSceneBasis = state; SceneView.RepaintAll(); }));
+            root.Add(Toggle("Camera basis", SceneViewDebugSettings.HUDCameraBasis, state => { SceneViewDebugSettings.HUDCameraBasis = state; SceneView.RepaintAll(); }));
+            root.Add(Toggle("Input state", SceneViewDebugSettings.HUDInputState, state => { SceneViewDebugSettings.HUDInputState = state; SceneView.RepaintAll(); }));
 
             root.Add(Spacer(6));
 
-            var opacity = new Slider("HUD opacity", 0f, 1f) { value = settings.hudOpacity };
+            var opacity = new Slider("HUD opacity", 0f, 1f) { value = SceneViewDebugSettings.HUDOpacity };
             opacity.RegisterValueChangedCallback(e =>
             {
-                settings.hudOpacity = e.newValue; ApplySettingChange(settings);
+                SceneViewDebugSettings.HUDOpacity = e.newValue; SceneView.RepaintAll();
             });
             root.Add(opacity);
 
@@ -46,20 +50,20 @@ namespace SceneRotationToolkit.Editor
             var row = new VisualElement { style = { flexDirection = FlexDirection.Row } };
             var reset = new Button(() =>
                 {
-                    settings.showPivotGizmo = true;
-                    settings.showRotationBadge = true;
-                    settings.showHud = true;
+                    SceneViewDebugSettings.ShowPivotGizmo = true;
+                    SceneViewDebugSettings.ShowRotationBadge = true;
+                    SceneViewDebugSettings.ShowHud = true;
 
-                    settings.hudToolState = true;
-                    settings.hudMode = true;
-                    settings.hudPivot = true;
-                    settings.hudSceneBasis = true;
-                    settings.hudCameraBasis = true;
-                    settings.hudInputState = true;
+                    SceneViewDebugSettings.HUDToolState = true;
+                    SceneViewDebugSettings.HUDMode = true;
+                    SceneViewDebugSettings.HUDPivot = true;
+                    SceneViewDebugSettings.HUDSceneBasis = true;
+                    SceneViewDebugSettings.HUDCameraBasis = true;
+                    SceneViewDebugSettings.HUDInputState = true;
 
-                    settings.hudOpacity = 0.55f;
+                    SceneViewDebugSettings.HUDOpacity = 0.55f;
 
-                    ApplySettingChange(settings);
+                    SceneView.RepaintAll();
                 })
                 { text = "Reset" };
 
@@ -85,12 +89,6 @@ namespace SceneRotationToolkit.Editor
         {
             var spacer = new VisualElement { style = { height = h } };
             return spacer;
-        }
-
-        private static void ApplySettingChange(SceneViewDebugSettings settings)
-        {
-            settings.SaveNow();
-            SceneView.RepaintAll();
         }
 
         private static Toggle Toggle(string label, bool value, System.Action<bool> onChanged)

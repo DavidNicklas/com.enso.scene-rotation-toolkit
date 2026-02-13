@@ -25,11 +25,9 @@ namespace SceneRotationToolkit.Editor
             var cam = sv.camera;
             if (cam == null) return;
 
-            var settings = SceneViewDebugSettings.instance;
-
-            if (settings.showPivotGizmo) DrawPivotGizmo(sv);
-            if (settings.showRotationBadge) DrawRotationBadge(sv, settings);
-            if (settings.showHud) DrawHUD(sv, settings);
+            if (SceneViewDebugSettings.ShowPivotGizmo) DrawPivotGizmo(sv);
+            if (SceneViewDebugSettings.ShowRotationBadge) DrawRotationBadge(sv);
+            if (SceneViewDebugSettings.ShowHud) DrawHUD(sv);
         }
 
         /// <summary>
@@ -62,9 +60,8 @@ namespace SceneRotationToolkit.Editor
         /// Draws a small rectangle with a label and a color of the current rotation
         /// </summary>
         /// <param name="sv"></param>
-        /// <param name="settings"></param>
         /// <exception cref="ArgumentOutOfRangeException"></exception>
-        private static void DrawRotationBadge(SceneView sv, SceneViewDebugSettings settings)
+        private static void DrawRotationBadge(SceneView sv)
         {
             Handles.BeginGUI();
             var style = new GUIStyle(EditorStyles.miniLabel)
@@ -74,21 +71,23 @@ namespace SceneRotationToolkit.Editor
                 wordWrap = true
             };
 
-            var rotationState = SceneViewState.GetState();
+            var rotationState = SceneViewState.GetRotationState();
 
             // Background box dimension
             float width = Mathf.Min(100, sv.position.width - 20);
-            var rect = new Rect((sv.position.width / 2) - (width / 2), 10, width, 0);
-            rect.height = style.CalcHeight(new GUIContent(rotationState.ToString()), width) + 12;
+            var rect = new Rect((sv.position.width / 2) - (width / 2), 10, width, 0)
+            {
+                height = style.CalcHeight(new GUIContent(rotationState.ToString()), width) + 12
+            };
 
             DrawOutline(rect, 2f, Color.black);
 
             var bgColor = rotationState switch
             {
-                RotationState.South => new Color(1, 0, 0.2f, settings.hudOpacity),
-                RotationState.North => new Color(0, 0.8f, 1, settings.hudOpacity),
-                RotationState.East => new Color(0.3f, 0, 0.7f, settings.hudOpacity),
-                RotationState.West => new Color(0.7f, 0.5f, 0, settings.hudOpacity),
+                RotationState.South => new Color(1, 0, 0.2f, SceneViewDebugSettings.HUDOpacity),
+                RotationState.North => new Color(0, 0.8f, 1, SceneViewDebugSettings.HUDOpacity),
+                RotationState.East => new Color(0.3f, 0, 0.7f, SceneViewDebugSettings.HUDOpacity),
+                RotationState.West => new Color(0.7f, 0.5f, 0, SceneViewDebugSettings.HUDOpacity),
                 _ => throw new ArgumentOutOfRangeException()
             };
             EditorGUI.DrawRect(rect, bgColor);
@@ -116,8 +115,7 @@ namespace SceneRotationToolkit.Editor
         /// Draws alls the information inside a container in the scene view
         /// </summary>
         /// <param name="sv"></param>
-        /// <param name="settings"></param>
-        private static void DrawHUD(SceneView sv, SceneViewDebugSettings settings)
+        private static void DrawHUD(SceneView sv)
         {
             var cam = sv.camera;
             var e = Event.current;
@@ -157,12 +155,12 @@ namespace SceneRotationToolkit.Editor
 
             System.Text.StringBuilder sb = new System.Text.StringBuilder(512);
 
-            if (settings.hudToolState) sb.AppendLine(toolState);
-            if (settings.hudMode) sb.AppendLine(mode);
-            if (settings.hudPivot) sb.AppendLine(pivot);
-            if (settings.hudSceneBasis) sb.AppendLine(basis);
-            if (settings.hudCameraBasis) sb.AppendLine(camBasis);
-            if (settings.hudInputState) sb.AppendLine(inputState);
+            if (SceneViewDebugSettings.HUDToolState) sb.AppendLine(toolState);
+            if (SceneViewDebugSettings.HUDMode) sb.AppendLine(mode);
+            if (SceneViewDebugSettings.HUDPivot) sb.AppendLine(pivot);
+            if (SceneViewDebugSettings.HUDSceneBasis) sb.AppendLine(basis);
+            if (SceneViewDebugSettings.HUDCameraBasis) sb.AppendLine(camBasis);
+            if (SceneViewDebugSettings.HUDInputState) sb.AppendLine(inputState);
 
             string text = sb.ToString().TrimEnd();
 
@@ -179,7 +177,7 @@ namespace SceneRotationToolkit.Editor
             rect.height = style.CalcHeight(new GUIContent(text), width) + 12;
 
             // Slight translucent background
-            var bg = new Color(0, 0, 0, settings.hudOpacity);
+            var bg = new Color(0, 0, 0, SceneViewDebugSettings.HUDOpacity);
             EditorGUI.DrawRect(rect, bg);
 
             // Text
