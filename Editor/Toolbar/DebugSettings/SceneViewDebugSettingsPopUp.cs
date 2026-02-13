@@ -8,7 +8,6 @@ namespace SceneRotationToolkit.Editor
     {
         public override VisualElement CreateGUI()
         {
-
             var root = new VisualElement
             {
                 style =

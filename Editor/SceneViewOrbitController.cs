@@ -7,30 +7,41 @@ namespace SceneRotationToolkit.Editor
     {
         private static int orbitControlId;
         private static float yawSign = 1f;
+        private const float SENSITIVITY = 0.003f * Mathf.Rad2Deg;
+
+        public static bool IsRelevant(Event e)
+        {
+            return e.alt && !e.shift && e.button == 0 &&
+                   (e.type == EventType.Layout ||
+                    e.type == EventType.MouseDown ||
+                    e.type == EventType.MouseDrag ||
+                    e.type == EventType.MouseUp ||
+                    e.type == EventType.MouseLeaveWindow ||
+                    e.type == EventType.Ignore);
+        }
 
         public static void Handle(SceneView sv, Event e)
         {
-            if (sv.in2DMode) return;
+            if (orbitControlId == 0)
+                orbitControlId = GUIUtility.GetControlID(FocusType.Passive);
 
-            // Reserve Alt+Shift+LMB for RectTool / handle modifications
-            if (e.alt && e.shift && e.button == 0) return;
-
-            // Create a stable control id
-            if (orbitControlId == 0) orbitControlId = GUIUtility.GetControlID(FocusType.Passive);
-
-            bool wantsOrbit = WantsOrbit(e);
-
-            // During layout, declare "if orbit happens, route events to us"
+            // During layout, declare "if orbit happens, route events to this class"
             if (e.type == EventType.Layout)
             {
-                if (wantsOrbit) HandleUtility.AddDefaultControl(orbitControlId);
+                HandleUtility.AddDefaultControl(orbitControlId);
                 return;
             }
 
-            // If another control is actively dragging and it's not us -> don't fight it
+            if (EndOrbitOutOfSceneView(e))
+            {
+                ForceEnd(e);
+                return;
+            }
+
+            // If another control is actively dragging, and it's not us -> don't fight it
             if (GUIUtility.hotControl != 0 && GUIUtility.hotControl != orbitControlId) return;
 
-            if (IsOrbitStart(e))
+            if (IsStart(e))
             {
                 GUIUtility.hotControl = orbitControlId;
                 UpdateYawSign(sv);
@@ -40,64 +51,44 @@ namespace SceneRotationToolkit.Editor
                 return;
             }
 
-            if (IsOrbitDrag(e) && GUIUtility.hotControl == orbitControlId)
+            if (IsDrag(e) && GUIUtility.hotControl == orbitControlId)
             {
-                Orbit(sv, e);
+                PerformOrbit(sv, e);
                 ToolUtility.SetTool(Tool.View, ViewTool.Orbit);
                 e.Use();
                 sv.Repaint();
                 return;
             }
 
-            if (IsOrbitEnd(e) && GUIUtility.hotControl == orbitControlId)
+            if (IsEnd(e))
             {
-                GUIUtility.hotControl = 0;
-                ToolUtility.RestorePreviousToolState();
-                EditorGUIUtility.SetWantsMouseJumping(0);
-                e.Use();
+                ForceEnd(e);
             }
         }
 
-        private static bool WantsOrbit(Event e)
+        private static bool EndOrbitOutOfSceneView(Event e)
         {
-            if (e.alt && !e.shift && e.button == 0) return true;
-            if (e.button == 1) return true;
-            return false;
+            return GUIUtility.hotControl == orbitControlId &&
+                   (!e.alt || e.type == EventType.MouseLeaveWindow || e.type == EventType.Ignore);
         }
 
-        private static bool IsOrbitStart(Event e)
-        {
-            if (e.type != EventType.MouseDown) return false;
-            return (e.alt && !e.shift && e.button == 0) || e.button == 1;
-        }
+        private static bool IsStart(Event e) => e.type == EventType.MouseDown && e.alt && !e.shift && e.button == 0;
+        private static bool IsDrag(Event e)  => e.type == EventType.MouseDrag && e.alt && !e.shift && e.button == 0;
+        private static bool IsEnd(Event e)   => e.type == EventType.MouseUp   && e.alt && !e.shift && e.button == 0;
 
-        private static bool IsOrbitDrag(Event e)
+        private static void PerformOrbit(SceneView sv, Event e)
         {
-            if (e.type != EventType.MouseDrag) return false;
-            return (e.alt && !e.shift && e.button == 0) || e.button == 1;
-        }
-
-        private static bool IsOrbitEnd(Event e)
-        {
-            if (e.type != EventType.MouseUp) return false;
-            return (e.alt && !e.shift && e.button == 0) || e.button == 1;
-        }
-
-        private static void Orbit(SceneView sv, Event e)
-        {
-            float scaling = 0.003f * Mathf.Rad2Deg;
-
-            Quaternion sceneRotation = sv.rotation;
+            Quaternion rot = sv.rotation;
 
             Vector3 sceneUp = Quaternion.AngleAxis(SceneViewState.SceneZRotation, Vector3.forward) * Vector3.up;
 
             // Pitch around camera-local right
-            sceneRotation = Quaternion.AngleAxis(e.delta.y * scaling, sceneRotation * Vector3.right) * sceneRotation;
+            rot = Quaternion.AngleAxis(e.delta.y * SENSITIVITY, rot * Vector3.right) * rot;
 
             // Yaw around sceneUp with sign flip
-            sceneRotation = Quaternion.AngleAxis(yawSign * e.delta.x * scaling, sceneUp) * sceneRotation;
+            rot = Quaternion.AngleAxis(yawSign * e.delta.x * SENSITIVITY, sceneUp) * rot;
 
-            sv.rotation = sceneRotation;
+            sv.rotation = rot;
         }
 
         private static void UpdateYawSign(SceneView sv)
@@ -106,6 +97,14 @@ namespace SceneRotationToolkit.Editor
 
             yawSign = Mathf.Sign(Vector3.Dot(sv.rotation * Vector3.up, sceneUp));
             if (Mathf.Approximately(yawSign, 0f)) yawSign = 1f;
+        }
+
+        private static void ForceEnd(Event e)
+        {
+            GUIUtility.hotControl = 0;
+            ToolUtility.RestorePreviousToolState();
+            EditorGUIUtility.SetWantsMouseJumping(0);
+            e.Use();
         }
     }
 }

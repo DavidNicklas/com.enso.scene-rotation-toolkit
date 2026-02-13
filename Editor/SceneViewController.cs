@@ -19,6 +19,20 @@ namespace SceneRotationToolkit.Editor
 
             SyncHook();
             EditorApplication.delayCall += ApplyCurrentToLastSceneView;
+
+            AssemblyReloadEvents.beforeAssemblyReload += Cleanup;
+            EditorApplication.quitting += Cleanup;
+        }
+
+        private static void Cleanup()
+        {
+            SceneView.duringSceneGui -= OnSceneGUI;
+            hooked = false;
+
+            SceneViewState.onChanged -= OnModelChanged;
+
+            AssemblyReloadEvents.beforeAssemblyReload -= Cleanup;
+            EditorApplication.quitting -= Cleanup;
         }
 
         private static void OnModelChanged()
@@ -65,7 +79,7 @@ namespace SceneRotationToolkit.Editor
                 return;
             }
 
-            SceneViewOrbitController.Handle(sv, e);
+            SceneView3DModeController.Handle(sv, e);
         }
 
         private static string BuildMessage()
