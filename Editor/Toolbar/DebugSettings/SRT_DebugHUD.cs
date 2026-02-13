@@ -4,7 +4,7 @@ using UnityEngine;
 
 namespace SceneRotationToolkit.Editor
 {
-    public static class SceneViewDebugHUD
+    public static class SRT_DebugHUD
     {
         private static bool enabled;
 
@@ -25,9 +25,9 @@ namespace SceneRotationToolkit.Editor
             var cam = sv.camera;
             if (cam == null) return;
 
-            if (SceneViewDebugSettings.ShowPivotGizmo) DrawPivotGizmo(sv);
-            if (SceneViewDebugSettings.ShowRotationBadge) DrawRotationBadge(sv);
-            if (SceneViewDebugSettings.ShowHud) DrawHUD(sv);
+            if (SRT_DebugSettings.ShowPivotGizmo) DrawPivotGizmo(sv);
+            if (SRT_DebugSettings.ShowRotationBadge) DrawRotationBadge(sv);
+            if (SRT_DebugSettings.ShowHud) DrawHUD(sv);
         }
 
         /// <summary>
@@ -71,7 +71,7 @@ namespace SceneRotationToolkit.Editor
                 wordWrap = true
             };
 
-            var rotationState = SceneViewState.GetRotationState();
+            var rotationState = SRT_SceneViewState.GetRotationState();
 
             // Background box dimension
             float width = Mathf.Min(100, sv.position.width - 20);
@@ -84,10 +84,10 @@ namespace SceneRotationToolkit.Editor
 
             var bgColor = rotationState switch
             {
-                RotationState.South => new Color(1, 0, 0.2f, SceneViewDebugSettings.HUDOpacity),
-                RotationState.North => new Color(0, 0.8f, 1, SceneViewDebugSettings.HUDOpacity),
-                RotationState.East => new Color(0.3f, 0, 0.7f, SceneViewDebugSettings.HUDOpacity),
-                RotationState.West => new Color(0.7f, 0.5f, 0, SceneViewDebugSettings.HUDOpacity),
+                RotationState.South => new Color(1, 0, 0.2f, SRT_DebugSettings.HUDOpacity),
+                RotationState.North => new Color(0, 0.8f, 1, SRT_DebugSettings.HUDOpacity),
+                RotationState.East => new Color(0.3f, 0, 0.7f, SRT_DebugSettings.HUDOpacity),
+                RotationState.West => new Color(0.7f, 0.5f, 0, SRT_DebugSettings.HUDOpacity),
                 _ => throw new ArgumentOutOfRangeException()
             };
             EditorGUI.DrawRect(rect, bgColor);
@@ -132,7 +132,7 @@ namespace SceneRotationToolkit.Editor
             string zoomLine = $"CamDist: {camDist:0.###}";
 
             string toolState =
-                $"EnableTool: {SceneViewState.EnableTool}   Fake2D: {SceneViewState.Is2DMode}   SceneZ: {SceneViewState.SceneZRotation:0}°";
+                $"EnableTool: {SRT_SceneViewState.EnableTool}   Fake2D: {SRT_SceneViewState.Is2DMode}   SceneZ: {SRT_SceneViewState.SceneZRotation:0}°";
 
             string inputState =
                 $"Mouse: {e.type} btn:{e.button} alt:{e.alt} shift:{e.shift} ctrl:{e.control} cmd:{e.command} " +
@@ -155,12 +155,12 @@ namespace SceneRotationToolkit.Editor
 
             System.Text.StringBuilder sb = new System.Text.StringBuilder(512);
 
-            if (SceneViewDebugSettings.HUDToolState) sb.AppendLine(toolState);
-            if (SceneViewDebugSettings.HUDMode) sb.AppendLine(mode);
-            if (SceneViewDebugSettings.HUDPivot) sb.AppendLine(pivot);
-            if (SceneViewDebugSettings.HUDSceneBasis) sb.AppendLine(basis);
-            if (SceneViewDebugSettings.HUDCameraBasis) sb.AppendLine(camBasis);
-            if (SceneViewDebugSettings.HUDInputState) sb.AppendLine(inputState);
+            if (SRT_DebugSettings.HUDToolState) sb.AppendLine(toolState);
+            if (SRT_DebugSettings.HUDMode) sb.AppendLine(mode);
+            if (SRT_DebugSettings.HUDPivot) sb.AppendLine(pivot);
+            if (SRT_DebugSettings.HUDSceneBasis) sb.AppendLine(basis);
+            if (SRT_DebugSettings.HUDCameraBasis) sb.AppendLine(camBasis);
+            if (SRT_DebugSettings.HUDInputState) sb.AppendLine(inputState);
 
             string text = sb.ToString().TrimEnd();
 
@@ -177,7 +177,7 @@ namespace SceneRotationToolkit.Editor
             rect.height = style.CalcHeight(new GUIContent(text), width) + 12;
 
             // Slight translucent background
-            var bg = new Color(0, 0, 0, SceneViewDebugSettings.HUDOpacity);
+            var bg = new Color(0, 0, 0, SRT_DebugSettings.HUDOpacity);
             EditorGUI.DrawRect(rect, bg);
 
             // Text

@@ -3,7 +3,7 @@ using UnityEngine;
 
 namespace SceneRotationToolkit.Editor
 {
-    public class SceneViewOrbitController
+    public class SRT_OrbitController
     {
         private int orbitControlId;
         private float yawSign = 1f;
@@ -80,7 +80,7 @@ namespace SceneRotationToolkit.Editor
         {
             Quaternion rot = sv.rotation;
 
-            Vector3 sceneUp = Quaternion.AngleAxis(SceneViewState.SceneZRotation, Vector3.forward) * Vector3.up;
+            Vector3 sceneUp = Quaternion.AngleAxis(SRT_SceneViewState.SceneZRotation, Vector3.forward) * Vector3.up;
 
             // Pitch around camera-local right
             rot = Quaternion.AngleAxis(e.delta.y * SENSITIVITY, rot * Vector3.right) * rot;
@@ -93,7 +93,7 @@ namespace SceneRotationToolkit.Editor
 
         private void UpdateYawSign(SceneView sv)
         {
-            Vector3 sceneUp = Quaternion.AngleAxis(SceneViewState.SceneZRotation, Vector3.forward) * Vector3.up;
+            Vector3 sceneUp = Quaternion.AngleAxis(SRT_SceneViewState.SceneZRotation, Vector3.forward) * Vector3.up;
 
             yawSign = Mathf.Sign(Vector3.Dot(sv.rotation * Vector3.up, sceneUp));
             if (Mathf.Approximately(yawSign, 0f)) yawSign = 1f;

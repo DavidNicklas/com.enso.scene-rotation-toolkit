@@ -3,10 +3,10 @@ using UnityEngine;
 
 namespace SceneRotationToolkit.Editor
 {
-    public static class SceneView3DModeController
+    public static class SRT_3DModeController
     {
-        private static readonly SceneViewOrbitController OrbitController = new();
-        private static readonly SceneViewFPSController SceneViewFPSController = new();
+        private static readonly SRT_OrbitController OrbitController = new();
+        private static readonly SRT_FPSController FPSController = new();
 
         public static void Handle(SceneView sv, Event e)
         {
@@ -17,9 +17,9 @@ namespace SceneRotationToolkit.Editor
             if (e.alt && e.shift && e.button == 0) return;
 
             // FPS has priority while active or when RMB starts
-            if (SceneViewFPSController.IsRelevant(e) || SceneViewFPSController.IsActive)
+            if (FPSController.IsRelevant(e) || FPSController.IsActive)
             {
-                if (SceneViewFPSController.Handle(sv, e))
+                if (FPSController.Handle(sv, e))
                     return;
             }
 

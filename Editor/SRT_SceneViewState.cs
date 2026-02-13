@@ -5,13 +5,13 @@ namespace SceneRotationToolkit.Editor
 {
     public enum RotationState { South, North, East, West }
 
-    public readonly struct SceneRotationStateSnapshot
+    public readonly struct SceneViewStateSnapshot
     {
         public readonly float sceneZRotation;
         public readonly bool is2DMode;
         public readonly bool enableTool;
 
-        public SceneRotationStateSnapshot(float sceneZRotation, bool is2DMode, bool enableTool)
+        public SceneViewStateSnapshot(float sceneZRotation, bool is2DMode, bool enableTool)
         {
             this.sceneZRotation = sceneZRotation;
             this.is2DMode = is2DMode;
@@ -19,7 +19,7 @@ namespace SceneRotationToolkit.Editor
         }
     }
 
-    public static class SceneViewState
+    public static class SRT_SceneViewState
     {
         public const float SOUTH_Z_ROTATION_ANGLE = 0f;
         private const float EAST_Z_ROTATION_ANGLE  = 90f;
@@ -32,7 +32,7 @@ namespace SceneRotationToolkit.Editor
 
         public static event Action onChanged;
 
-        public static SceneRotationStateSnapshot PreviousState { get; private set; }
+        public static SceneViewStateSnapshot PreviousState { get; private set; }
 
         public static void SetRotation(RotationState rotation)
         {
@@ -112,9 +112,9 @@ namespace SceneRotationToolkit.Editor
             return RotationState.South;
         }
 
-        private static SceneRotationStateSnapshot CreateSnapshot()
+        private static SceneViewStateSnapshot CreateSnapshot()
         {
-            return new SceneRotationStateSnapshot(SceneZRotation, Is2DMode, EnableTool);
+            return new SceneViewStateSnapshot(SceneZRotation, Is2DMode, EnableTool);
         }
 
         private static void RaiseChanged()

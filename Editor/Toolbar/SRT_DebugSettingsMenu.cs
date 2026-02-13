@@ -7,11 +7,11 @@ using PopupWindow = UnityEditor.PopupWindow;
 namespace SceneRotationToolkit.Editor
 {
     [EditorToolbarElement(ID, typeof(SceneView))]
-    public class SceneRotationToolkitDebugSettingsMenu : EditorToolbarDropdownToggle
+    public class SRT_DebugSettingsMenu : EditorToolbarDropdownToggle
     {
         public const string ID = "SceneRotation/SettingsMenu";
 
-        public SceneRotationToolkitDebugSettingsMenu()
+        public SRT_DebugSettingsMenu()
         {
             icon = EditorGUIUtility.IconContent("d_debug").image as Texture2D;
             tooltip = "Toggle Debug Infos";
@@ -23,12 +23,12 @@ namespace SceneRotationToolkit.Editor
 
         private void OnToggleChanged(ChangeEvent<bool> evt)
         {
-            SceneViewDebugHUD.Toggle();
+            SRT_DebugHUD.Toggle();
         }
 
         private void OnDropdownClicked()
         {
-            var popUp = new SceneViewDebugSettingsPopUp();
+            var popUp = new SRT_DebugSettingsPopup();
             var mousePosition = Event.current.mousePosition;
             var rect = new Rect(mousePosition.x, mousePosition.y - 20f, 40, 40);
             PopupWindow.Show(rect, popUp);

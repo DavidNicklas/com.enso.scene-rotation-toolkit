@@ -6,11 +6,11 @@ using UnityEngine.UIElements;
 namespace SceneRotationToolkit.Editor
 {
     [EditorToolbarElement(ID, typeof(SceneView))]
-    public class EnableToolToggle : EditorToolbarToggle
+    public class SRT_EnableToolToggle : EditorToolbarToggle
     {
         public const string ID = "SceneRotationToolkit/Enable";
 
-        public EnableToolToggle()
+        public SRT_EnableToolToggle()
         {
             text = "Enable";
             tooltip = "Enable the tool and the custom orbit/pan logic";
@@ -19,18 +19,18 @@ namespace SceneRotationToolkit.Editor
 
             this.RegisterValueChangedCallback(_ =>
             {
-                SceneViewState.ToggleTool();
+                SRT_SceneViewState.ToggleTool();
             });
 
-            SceneViewState.onChanged += Sync;
-            RegisterCallback<DetachFromPanelEvent>(_ => SceneViewState.onChanged -= Sync);
+            SRT_SceneViewState.onChanged += Sync;
+            RegisterCallback<DetachFromPanelEvent>(_ => SRT_SceneViewState.onChanged -= Sync);
             Sync();
         }
 
         private void Sync()
         {
-            SetValueWithoutNotify(SceneViewState.EnableTool);
-            text = SceneViewState.EnableTool ? "Enabled" : "Disabled";
+            SetValueWithoutNotify(SRT_SceneViewState.EnableTool);
+            text = SRT_SceneViewState.EnableTool ? "Enabled" : "Disabled";
         }
     }
 }

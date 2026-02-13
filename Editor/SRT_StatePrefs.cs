@@ -2,7 +2,7 @@ using UnityEditor;
 
 namespace SceneRotationToolkit.Editor
 {
-    internal static class SceneRotationPrefs
+    internal static class SRT_StatePrefs
     {
         private static class Keys
         {
@@ -17,21 +17,21 @@ namespace SceneRotationToolkit.Editor
 
             if (!enable)
             {
-                SceneViewState.SetState(SceneViewState.SOUTH_Z_ROTATION_ANGLE, false, false);
+                SRT_SceneViewState.SetState(SRT_SceneViewState.SOUTH_Z_ROTATION_ANGLE, false, false);
                 return;
             }
 
-            float z = EditorPrefs.GetFloat(Keys.Z_ROTATION, SceneViewState.SOUTH_Z_ROTATION_ANGLE);
+            float z = EditorPrefs.GetFloat(Keys.Z_ROTATION, SRT_SceneViewState.SOUTH_Z_ROTATION_ANGLE);
             bool is2D = EditorPrefs.GetBool(Keys.IS_2D_MODE, false);
 
-            SceneViewState.SetState(z, is2D, true);
+            SRT_SceneViewState.SetState(z, is2D, true);
         }
 
         public static void SaveFromModel()
         {
-            EditorPrefs.SetBool(Keys.ENABLE, SceneViewState.EnableTool);
-            EditorPrefs.SetFloat(Keys.Z_ROTATION, SceneViewState.SceneZRotation);
-            EditorPrefs.SetBool(Keys.IS_2D_MODE, SceneViewState.Is2DMode);
+            EditorPrefs.SetBool(Keys.ENABLE, SRT_SceneViewState.EnableTool);
+            EditorPrefs.SetFloat(Keys.Z_ROTATION, SRT_SceneViewState.SceneZRotation);
+            EditorPrefs.SetBool(Keys.IS_2D_MODE, SRT_SceneViewState.Is2DMode);
         }
     }
 }

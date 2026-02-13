@@ -6,11 +6,11 @@ using UnityEngine.UIElements;
 namespace SceneRotationToolkit.Editor
 {
     [EditorToolbarElement(ID, typeof(SceneView))]
-    public class Fake2DToggle : EditorToolbarToggle
+    public class SRT_2DModeToggle : EditorToolbarToggle
     {
         public const string ID = "SceneRotation/Fake2D";
 
-        public Fake2DToggle()
+        public SRT_2DModeToggle()
         {
             tooltip = "Toggle 2D Mode";
             onIcon = EditorGUIUtility.IconContent("d_SceneView2D On").image as Texture2D;
@@ -18,18 +18,18 @@ namespace SceneRotationToolkit.Editor
 
             this.RegisterValueChangedCallback(_ =>
             {
-                SceneViewState.Toggle2DMode();
+                SRT_SceneViewState.Toggle2DMode();
             });
 
-            SceneViewState.onChanged += Sync;
-            RegisterCallback<DetachFromPanelEvent>(_ => SceneViewState.onChanged -= Sync);
+            SRT_SceneViewState.onChanged += Sync;
+            RegisterCallback<DetachFromPanelEvent>(_ => SRT_SceneViewState.onChanged -= Sync);
             Sync();
         }
 
         private void Sync()
         {
-            SetValueWithoutNotify(SceneViewState.Is2DMode);
-            style.display = SceneViewState.EnableTool ? DisplayStyle.Flex : DisplayStyle.None;
+            SetValueWithoutNotify(SRT_SceneViewState.Is2DMode);
+            style.display = SRT_SceneViewState.EnableTool ? DisplayStyle.Flex : DisplayStyle.None;
         }
     }
 }

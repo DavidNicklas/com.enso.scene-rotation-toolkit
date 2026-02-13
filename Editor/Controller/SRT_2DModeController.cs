@@ -3,7 +3,7 @@ using UnityEngine;
 
 namespace SceneRotationToolkit.Editor
 {
-    public static class Fake2DModeController
+    public static class SRT_2DModeController
     {
         private static bool switched;
 

@@ -2,7 +2,7 @@ using UnityEditor;
 
 namespace SceneRotationToolkit.Editor
 {
-    public static class SceneViewDebugSettings
+    public static class SRT_DebugSettings
     {
         private static class Keys
         {

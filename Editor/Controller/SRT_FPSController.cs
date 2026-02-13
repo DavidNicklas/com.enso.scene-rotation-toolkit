@@ -3,7 +3,7 @@ using UnityEngine;
 
 namespace SceneRotationToolkit.Editor
 {
-    public class SceneViewFPSController
+    public class SRT_FPSController
     {
         private int fpsControlId;
 
@@ -232,7 +232,7 @@ namespace SceneRotationToolkit.Editor
 
         private Vector3 GetSceneUp()
         {
-            return Quaternion.AngleAxis(SceneViewState.SceneZRotation, Vector3.forward) * Vector3.up;
+            return Quaternion.AngleAxis(SRT_SceneViewState.SceneZRotation, Vector3.forward) * Vector3.up;
         }
     }
 }

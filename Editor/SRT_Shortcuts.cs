@@ -7,7 +7,7 @@ namespace SceneRotationToolkit.Editor
 {
     public enum ShortcutTypes { ToggleTool, Toggle2DMode, RotateSouth, RotateNorth, RotateWest, RotateEast }
 
-    public static class SceneRotationShortcuts
+    public static class SRT_Shortcuts
     {
         private const string TOGGLE_TOOL_SHORTCUT_ID = "Scene Rotation Toolkit/Toggle Tool";
         private const string ROTATE_SOUTH_SHORTCUT_ID = "Scene Rotation Toolkit/South";
@@ -19,37 +19,37 @@ namespace SceneRotationToolkit.Editor
         [Shortcut(TOGGLE_TOOL_SHORTCUT_ID, typeof(SceneView), KeyCode.R, ShortcutModifiers.Alt)]
         private static void ToggleToolShortcut()
         {
-            SceneViewState.ToggleTool();
+            SRT_SceneViewState.ToggleTool();
         }
 
         [Shortcut(ROTATE_SOUTH_SHORTCUT_ID, typeof(SceneView), KeyCode.Alpha1)]
         public static void RotateSouth()
         {
-            if (SceneViewState.EnableTool) SceneViewState.SetRotation(RotationState.South);
+            if (SRT_SceneViewState.EnableTool) SRT_SceneViewState.SetRotation(RotationState.South);
         }
 
         [Shortcut(ROTATE_EAST_SHORTCUT_ID, typeof(SceneView), KeyCode.Alpha2)]
         public static void RotateEast()
         {
-            if (SceneViewState.EnableTool) SceneViewState.SetRotation(RotationState.East);
+            if (SRT_SceneViewState.EnableTool) SRT_SceneViewState.SetRotation(RotationState.East);
         }
 
         [Shortcut(ROTATE_NORTH_SHORTCUT_ID, typeof(SceneView), KeyCode.Alpha3)]
         public static void RotateNorth()
         {
-            if (SceneViewState.EnableTool) SceneViewState.SetRotation(RotationState.North);
+            if (SRT_SceneViewState.EnableTool) SRT_SceneViewState.SetRotation(RotationState.North);
         }
 
         [Shortcut(ROTATE_WEST_SHORTCUT_ID, typeof(SceneView), KeyCode.Alpha4)]
         public static void RotateWest()
         {
-            if (SceneViewState.EnableTool) SceneViewState.SetRotation(RotationState.West);
+            if (SRT_SceneViewState.EnableTool) SRT_SceneViewState.SetRotation(RotationState.West);
         }
 
         [Shortcut(TOGGLE_2D_SHORTCUT_ID, typeof(SceneView), KeyCode.Alpha5)]
         public static void Toggle2DMode()
         {
-            if (SceneViewState.EnableTool) SceneViewState.Toggle2DMode();
+            if (SRT_SceneViewState.EnableTool) SRT_SceneViewState.Toggle2DMode();
         }
 
         public static string GetShortcutName(ShortcutTypes type)
