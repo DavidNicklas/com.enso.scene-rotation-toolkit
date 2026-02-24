@@ -5,7 +5,7 @@ using UnityEngine;
 namespace SceneRotationToolkit.Editor
 {
     [Overlay(typeof(SceneView), "Scene Rotation", true)]
-    [Icon("d_ContentSizeFitter Icon")]
+    [Icon("d_Scene")]
     public class SRT_Toolbar : ToolbarOverlay
     {
         public SRT_Toolbar()

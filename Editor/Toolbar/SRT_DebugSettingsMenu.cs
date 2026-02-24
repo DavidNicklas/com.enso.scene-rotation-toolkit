@@ -13,7 +13,7 @@ namespace SceneRotationToolkit.Editor
 
         public SRT_DebugSettingsMenu()
         {
-            icon = EditorGUIUtility.IconContent("d_debug").image as Texture2D;
+            UpdateIcon();
             tooltip = "Toggle Debug Infos";
 
             this.RegisterValueChangedCallback(OnToggleChanged);
@@ -24,6 +24,7 @@ namespace SceneRotationToolkit.Editor
         private void OnToggleChanged(ChangeEvent<bool> evt)
         {
             SRT_DebugHUD.Toggle();
+            UpdateIcon();
         }
 
         private void OnDropdownClicked()
@@ -32,6 +33,13 @@ namespace SceneRotationToolkit.Editor
             var mousePosition = Event.current.mousePosition;
             var rect = new Rect(mousePosition.x, mousePosition.y - 20f, 40, 40);
             PopupWindow.Show(rect, popUp);
+        }
+
+        private void UpdateIcon()
+        {
+            var debugIcon = value ? EditorGUIUtility.IconContent("debug On").image as Texture2D
+                : EditorGUIUtility.IconContent("d_debug").image as Texture2D;
+            icon = debugIcon;
         }
     }
 }
