@@ -15,12 +15,20 @@ namespace SceneRotationToolkit.Editor
         private double lastTime;
 
         private const float MOUSE_SENSITIVITY = 0.003f * Mathf.Rad2Deg;
-        private const float BASE_SPEED = 7.0f;
+        private const float BASE_SPEED = 4.0f;
         private const float SHIFT_MULTIPLIER = 3.0f;
         private const float THRESHOLD = 0.0001f;
 
+        private float accelRampTime = 1.3f;
+        private float accelMaxMult = 8.0f;
+        private float accelDecayTime = 0.15f;
+        private float accelT;
+
         public bool IsRelevant(Event e)
         {
+            // If alt is pressed return to keep zoom mode
+            if (e.alt) return false;
+
             // RMB mouse events (start/drag/end) + key events while active
             if (e.button == 1 &&
                 (e.type == EventType.Layout ||
@@ -117,7 +125,10 @@ namespace SceneRotationToolkit.Editor
                 case KeyCode.D: dKey = down; break;
                 case KeyCode.Q: qKey = down; break;
                 case KeyCode.E: eKey = down; break;
-                case KeyCode.LeftShift or KeyCode.RightShift: shiftKey = down; break;
+                case KeyCode.LeftShift:
+                case KeyCode.RightShift:
+                    shiftKey = down;
+                    break;
             }
         }
 
@@ -137,6 +148,8 @@ namespace SceneRotationToolkit.Editor
 
             lastTime = EditorApplication.timeSinceStartup;
 
+            accelT = 0f;
+
             EditorApplication.update -= Tick;
             EditorApplication.update += Tick;
         }
@@ -153,6 +166,7 @@ namespace SceneRotationToolkit.Editor
             ToolUtility.RestorePreviousToolState();
 
             wKey = aKey = sKey = dKey = qKey = eKey = shiftKey = false;
+            accelT = 0f;
 
             EditorApplication.update -= Tick;
         }
@@ -187,10 +201,34 @@ namespace SceneRotationToolkit.Editor
             if (eKey) dir += sceneUp;
             if (qKey) dir -= sceneUp;
 
-            if (dir.sqrMagnitude < THRESHOLD) return;
-            dir.Normalize();
+            bool moving = dir.sqrMagnitude >= THRESHOLD;
 
-            float speed = BASE_SPEED * (shiftKey ? SHIFT_MULTIPLIER : 1f);
+            // Acceleration ramp
+            if (moving)
+            {
+                float ramp = (accelRampTime <= 0f) ? 1f : (dt / accelRampTime);
+                accelT = Mathf.Clamp01(accelT + ramp);
+            }
+            else
+            {
+                float decay = (accelDecayTime <= 0f) ? 1f : (dt / accelDecayTime);
+                accelT = Mathf.Clamp01(accelT - decay);
+                if (accelT <= 0f) return;
+            }
+
+            if (moving)
+            {
+                dir.Normalize();
+            }
+            else
+            {
+                // Here we simply stop (with accel decay above).
+                return;
+            }
+
+            float shiftMul = shiftKey ? SHIFT_MULTIPLIER : 1f;
+            float accelMul = Mathf.Lerp(1f, accelMaxMult, accelT);
+            float speed = BASE_SPEED * shiftMul * accelMul;
 
             // Keep camera position fixed while adjusting pivot
             Vector3 camPos = sv.camera.transform.position;
