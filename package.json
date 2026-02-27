@@ -1,15 +1,15 @@
 {
-    "name": "com.enso.scene-rotation-toolkit",
-    "displayName": "Scene Rotation Toolkit",
-    "author": "David Nicklas",
-    "version": "0.2.0",
-    "unity": "6000.0",
-    "description": "This tool is used for rotating the scene view in different angles (90, 180, 270, 0) and restore the default behaviour of Unity's orbit and pan. There is also a custom 2D mode and additional debug settings to help the user.",
-    "type": "library",
-    "keywords": [
-        "scene view",
-        "2d",
-        "editor tool"
-    ],
-    "_fingerprint": "07434fccd016a2fabab284e0aff30a592881c318"
+  "name": "com.enso.scene-rotation-toolkit",
+  "displayName": "Scene Rotation Toolkit",
+  "author": "David Nicklas",
+  "version": "0.2.0",
+  "unity": "6000.0",
+  "description": "This tool is used for rotating the scene view in different angles (90, 180, 270, 0) \nwhile keeping the default behaviour of Unity's orbit, pan, zoom and fps mode. \nThe toolkit also supports 2D and 3D mode and has additional debug settings to \ndisplay useful information about the camera and the state of the toolkit.",
+  "type": "library",
+  "keywords": [
+    "scene view",
+    "2d",
+    "editor tool"
+  ],
+  "_fingerprint": "07434fccd016a2fabab284e0aff30a592881c318"
 }

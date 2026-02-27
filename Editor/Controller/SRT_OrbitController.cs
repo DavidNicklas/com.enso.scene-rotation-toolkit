@@ -11,7 +11,7 @@ namespace SceneRotationToolkit.Editor
 
         public bool IsRelevant(Event e)
         {
-            return e.alt && !e.shift && e.button == 0 &&
+            return e.alt && e.button == 0 &&
                    (e.type == EventType.Layout ||
                     e.type == EventType.MouseDown ||
                     e.type == EventType.MouseDrag ||
@@ -83,7 +83,7 @@ namespace SceneRotationToolkit.Editor
             Vector3 sceneUp = Quaternion.AngleAxis(SRT_SceneViewState.SceneZRotation, Vector3.forward) * Vector3.up;
 
             // Pitch around camera-local right
-            rot = Quaternion.AngleAxis(e.delta.y * SENSITIVITY, rot * Vector3.right) * rot;
+            rot = Quaternion.AngleAxis(e.delta.y * SENSITIVITY, sv.camera.transform.right) * rot;
 
             // Yaw around sceneUp with sign flip
             rot = Quaternion.AngleAxis(yawSign * e.delta.x * SENSITIVITY, sceneUp) * rot;

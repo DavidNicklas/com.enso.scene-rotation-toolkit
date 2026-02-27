@@ -139,8 +139,7 @@ namespace SceneRotationToolkit.Editor
                 $"delta:{e.delta} pos:{e.mousePosition}";
 
             string basis =
-                $"SV Rot Euler: {rotEuler.x:0.##}, {rotEuler.y:0.##}, {rotEuler.z:0.##}\n" +
-                $"SV Forward: {FormatText(sv.rotation * Vector3.forward)}  Up: {FormatText(sv.rotation * Vector3.up)}  Right: {FormatText(sv.rotation * Vector3.right)}";
+                $"SV Rot Euler: {rotEuler.x:0.##}, {rotEuler.y:0.##}, {rotEuler.z:0.##}\n";
 
             string camBasis =
                 $"Cam Pos: {FormatText(camPos)}\n" +

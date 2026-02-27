@@ -13,10 +13,8 @@ namespace SceneRotationToolkit.Editor
             if (sv == null) return;
             if (sv.in2DMode) return;
 
-            // Reserve Alt+Shift+LMB for RectTool / handle modifications
-            if (e.alt && e.shift && e.button == 0) return;
+            if (IsZoomRelevant(e)) return;
 
-            // FPS has priority while active or when RMB starts
             if (FPSController.IsRelevant(e) || FPSController.IsActive)
             {
                 if (FPSController.Handle(sv, e))
@@ -27,6 +25,11 @@ namespace SceneRotationToolkit.Editor
             {
                 OrbitController.Handle(sv, e);
             }
+        }
+
+        private static bool IsZoomRelevant(Event e)
+        {
+            return e.alt && e.type == EventType.MouseDown && e.button == 1;
         }
     }
 }

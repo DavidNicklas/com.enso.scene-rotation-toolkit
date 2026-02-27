@@ -26,9 +26,6 @@ namespace SceneRotationToolkit.Editor
 
         public bool IsRelevant(Event e)
         {
-            // If alt is pressed return to keep zoom mode
-            if (e.alt) return false;
-
             // RMB mouse events (start/drag/end) + key events while active
             if (e.button == 1 &&
                 (e.type == EventType.Layout ||
@@ -185,13 +182,11 @@ namespace SceneRotationToolkit.Editor
 
             Vector3 sceneUp = GetSceneUp();
 
-            // Forward on the sceneUp-plane
-            Vector3 camForward = rot * Vector3.forward;
-            Vector3 forward = Vector3.ProjectOnPlane(camForward, sceneUp);
-            if (forward.sqrMagnitude < THRESHOLD) return;
+            // Forward on along the cameras forward vector
+            Vector3 forward = sv.camera.transform.forward;
             forward.Normalize();
 
-            Vector3 right = Vector3.Cross(sceneUp, forward).normalized;
+            Vector3 right = sv.camera.transform.right;
 
             Vector3 dir = Vector3.zero;
             if (wKey) dir += forward;
@@ -257,9 +252,8 @@ namespace SceneRotationToolkit.Editor
             // Yaw around sceneUp (mouse X)
             rot = Quaternion.AngleAxis(e.delta.x * MOUSE_SENSITIVITY, sceneUp) * rot;
 
-            // Pitch around stable right axis (prevents 90/270 "only vertical" movement)
-            Vector3 right = rot * Vector3.right;
-            rot = Quaternion.AngleAxis(e.delta.y * MOUSE_SENSITIVITY, right) * rot;
+            // Pitch around local right axis
+            rot = Quaternion.AngleAxis(e.delta.y * MOUSE_SENSITIVITY, sv.camera.transform.right) * rot;
 
             sv.rotation = rot;
             sv.pivot = camPos + (rot * Vector3.forward) * dist;
