@@ -60,7 +60,7 @@ namespace SceneRotationToolkit.Editor
 
             if (IsStart(e))
             {
-                Start(sv);
+                StartFPSMode(sv);
                 e.Use();
                 sv.Repaint();
                 return true;
@@ -129,7 +129,7 @@ namespace SceneRotationToolkit.Editor
             }
         }
 
-        private void Start(SceneView sv)
+        private void StartFPSMode(SceneView sv)
         {
             if (IsActive) return;
 
@@ -144,7 +144,6 @@ namespace SceneRotationToolkit.Editor
             rot = sv.rotation;
 
             lastTime = EditorApplication.timeSinceStartup;
-
             accelT = 0f;
 
             EditorApplication.update -= Tick;
@@ -197,6 +196,8 @@ namespace SceneRotationToolkit.Editor
             if (qKey) dir -= sceneUp;
 
             bool moving = dir.sqrMagnitude >= THRESHOLD;
+
+            var sad = sv.cameraSettings.accelerationEnabled;
 
             // Acceleration ramp
             if (moving)

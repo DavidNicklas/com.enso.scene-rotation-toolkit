@@ -21,9 +21,9 @@ namespace SceneRotationToolkit.Editor
 
             root.Add(Header("Debug HUD"));
 
-            root.Add(Toggle("Pivot gizmo", SRT_DebugSettings.ShowPivotGizmo, v => { SRT_DebugSettings.ShowPivotGizmo = v; SceneView.RepaintAll(); }));
-            root.Add(Toggle("Rotation badge", SRT_DebugSettings.ShowRotationBadge, v => { SRT_DebugSettings.ShowRotationBadge = v; SceneView.RepaintAll(); }));
-            root.Add(Toggle("HUD panel", SRT_DebugSettings.ShowHud, v => { SRT_DebugSettings.ShowHud = v; SceneView.RepaintAll(); }));
+            root.Add(Toggle("Pivot gizmo", SRT_DebugSettings.ShowPivotGizmo, state => { SRT_DebugSettings.ShowPivotGizmo = state; SceneView.RepaintAll(); }));
+            root.Add(Toggle("Rotation badge", SRT_DebugSettings.ShowRotationBadge, state => { SRT_DebugSettings.ShowRotationBadge = state; SceneView.RepaintAll(); }));
+            root.Add(Toggle("HUD panel", SRT_DebugSettings.ShowHud, state => { SRT_DebugSettings.ShowHud = state; SceneView.RepaintAll(); }));
 
             root.Add(Spacer(6));
             root.Add(Header("HUD sections"));
