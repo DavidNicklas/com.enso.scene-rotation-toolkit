@@ -197,8 +197,6 @@ namespace SceneRotationToolkit.Editor
 
             bool moving = dir.sqrMagnitude >= THRESHOLD;
 
-            var sad = sv.cameraSettings.accelerationEnabled;
-
             // Acceleration ramp
             if (moving)
             {
@@ -212,15 +210,7 @@ namespace SceneRotationToolkit.Editor
                 if (accelT <= 0f) return;
             }
 
-            if (moving)
-            {
-                dir.Normalize();
-            }
-            else
-            {
-                // Here we simply stop (with accel decay above).
-                return;
-            }
+            dir.Normalize();
 
             float shiftMul = shiftKey ? SHIFT_MULTIPLIER : 1f;
             float accelMul = Mathf.Lerp(1f, accelMaxMult, accelT);
