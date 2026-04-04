@@ -9,6 +9,7 @@ namespace SceneRotationToolkit.Editor
             public const string Z_ROTATION = "SceneRotationToolkit.State.ZRotation";
             public const string IS_2D_MODE = "SceneRotationToolkit.State.Is2DMode";
             public const string ENABLE     = "SceneRotationToolkit.State.Enable";
+            public const string DEBUG_MODE = "SceneRotationToolkit.State.DebugMode";
         }
 
         public static void LoadIntoModel()
@@ -17,14 +18,15 @@ namespace SceneRotationToolkit.Editor
 
             if (!enable)
             {
-                SRT_SceneViewState.SetState(SRT_SceneViewState.SOUTH_Z_ROTATION_ANGLE, false, false);
+                SRT_SceneViewState.SetState(SRT_SceneViewState.SOUTH_Z_ROTATION_ANGLE, false, false, false);
                 return;
             }
 
             float z = EditorPrefs.GetFloat(Keys.Z_ROTATION, SRT_SceneViewState.SOUTH_Z_ROTATION_ANGLE);
             bool is2D = EditorPrefs.GetBool(Keys.IS_2D_MODE, false);
+            bool debug = EditorPrefs.GetBool(Keys.DEBUG_MODE, false);
 
-            SRT_SceneViewState.SetState(z, is2D, true);
+            SRT_SceneViewState.SetState(z, is2D, true, debug);
         }
 
         public static void SaveFromModel()
@@ -32,6 +34,7 @@ namespace SceneRotationToolkit.Editor
             EditorPrefs.SetBool(Keys.ENABLE, SRT_SceneViewState.EnableTool);
             EditorPrefs.SetFloat(Keys.Z_ROTATION, SRT_SceneViewState.SceneZRotation);
             EditorPrefs.SetBool(Keys.IS_2D_MODE, SRT_SceneViewState.Is2DMode);
+            EditorPrefs.SetBool(Keys.DEBUG_MODE, SRT_SceneViewState.DebugMode);
         }
     }
 }

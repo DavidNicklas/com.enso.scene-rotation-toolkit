@@ -10,12 +10,14 @@ namespace SceneRotationToolkit.Editor
         public readonly float sceneZRotation;
         public readonly bool is2DMode;
         public readonly bool enableTool;
+        public readonly bool debugMode;
 
-        public SceneViewStateSnapshot(float sceneZRotation, bool is2DMode, bool enableTool)
+        public SceneViewStateSnapshot(float sceneZRotation, bool is2DMode, bool enableTool, bool debugMode)
         {
             this.sceneZRotation = sceneZRotation;
             this.is2DMode = is2DMode;
             this.enableTool = enableTool;
+            this.debugMode = debugMode;
         }
     }
 
@@ -29,6 +31,7 @@ namespace SceneRotationToolkit.Editor
         public static float SceneZRotation { get; private set; } = SOUTH_Z_ROTATION_ANGLE;
         public static bool Is2DMode { get; private set; }
         public static bool EnableTool { get; private set; }
+        public static bool DebugMode { get; private set; }
 
         public static event Action onChanged;
 
@@ -51,6 +54,13 @@ namespace SceneRotationToolkit.Editor
             RaiseChanged();
         }
 
+        public static void ToggleDebugMode()
+        {
+            PreviousState = CreateSnapshot();
+            DebugMode = !DebugMode;
+            RaiseChanged();
+        }
+
         public static void ToggleTool()
         {
             PreviousState = CreateSnapshot();
@@ -65,12 +75,13 @@ namespace SceneRotationToolkit.Editor
             RaiseChanged();
         }
 
-        public static void SetState(float rotationValue, bool is2DMode, bool enable)
+        public static void SetState(float rotationValue, bool is2DMode, bool enable, bool debugMode)
         {
             bool changed =
                 !Mathf.Approximately(SceneZRotation, rotationValue) ||
                 Is2DMode != is2DMode ||
-                EnableTool != enable;
+                EnableTool != enable ||
+                DebugMode != debugMode;
 
             if (!changed) return;
 
@@ -79,6 +90,7 @@ namespace SceneRotationToolkit.Editor
             SceneZRotation = rotationValue;
             Is2DMode = is2DMode;
             EnableTool = enable;
+            DebugMode = debugMode;
 
             if (!EnableTool)
             {
@@ -114,7 +126,7 @@ namespace SceneRotationToolkit.Editor
 
         private static SceneViewStateSnapshot CreateSnapshot()
         {
-            return new SceneViewStateSnapshot(SceneZRotation, Is2DMode, EnableTool);
+            return new SceneViewStateSnapshot(SceneZRotation, Is2DMode, EnableTool, DebugMode);
         }
 
         private static void RaiseChanged()

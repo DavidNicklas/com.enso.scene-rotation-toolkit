@@ -18,7 +18,7 @@ namespace SceneRotationToolkit.Editor
             SRT_SceneViewState.onChanged += OnModelChanged;
 
             SyncHook();
-            EditorApplication.delayCall += ApplyCurrentToLastSceneView;
+            // if (SRT_SceneViewState.EnableTool) EditorApplication.delayCall += ApplyCurrentToLastSceneView;
 
             AssemblyReloadEvents.beforeAssemblyReload += Cleanup;
             EditorApplication.quitting += Cleanup;
@@ -63,6 +63,9 @@ namespace SceneRotationToolkit.Editor
         {
             var sv = SceneView.lastActiveSceneView;
             if (sv == null) return;
+
+            var snapshot = SRT_SceneViewState.PreviousState;
+            if (snapshot.debugMode != SRT_SceneViewState.DebugMode) return;
 
             SceneViewCameraUtility.ApplyState(sv, SRT_SceneViewState.Is2DMode, SRT_SceneViewState.SceneZRotation, BuildMessage());
         }

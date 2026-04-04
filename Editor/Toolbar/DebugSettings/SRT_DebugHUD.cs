@@ -10,9 +10,11 @@ namespace SceneRotationToolkit.Editor
 
         private const float PIVOT_GIZMO_THICKNESS = 1.5f;
 
-        public static void Toggle()
+        public static void Toggle(bool debugMode)
         {
-            enabled = !enabled;
+            if (enabled == debugMode) return;
+
+            enabled = debugMode;
 
             if (enabled) SceneView.duringSceneGui += Draw;
             else SceneView.duringSceneGui -= Draw;

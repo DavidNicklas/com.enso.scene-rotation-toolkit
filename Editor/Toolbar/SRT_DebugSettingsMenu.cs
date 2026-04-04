@@ -18,12 +18,23 @@ namespace SceneRotationToolkit.Editor
 
             this.RegisterValueChangedCallback(OnToggleChanged);
             dropdownClicked += OnDropdownClicked;
+            SRT_SceneViewState.onChanged += Sync;
             RegisterCallback<DetachFromPanelEvent>(_ => dropdownClicked -= OnDropdownClicked);
+            RegisterCallback<DetachFromPanelEvent>(_ => SRT_SceneViewState.onChanged -= Sync);
+            Sync();
+        }
+
+        private void Sync()
+        {
+            SetValueWithoutNotify(SRT_SceneViewState.DebugMode);
+            SRT_DebugHUD.Toggle(SRT_SceneViewState.DebugMode);
+            UpdateIcon();
         }
 
         private void OnToggleChanged(ChangeEvent<bool> evt)
         {
-            SRT_DebugHUD.Toggle();
+            SRT_SceneViewState.ToggleDebugMode();
+            SRT_DebugHUD.Toggle(evt.newValue);
             UpdateIcon();
         }
 
