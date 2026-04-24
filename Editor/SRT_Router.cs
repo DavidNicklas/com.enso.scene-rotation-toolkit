@@ -78,7 +78,6 @@ namespace SceneRotationToolkit.Editor
 
             if (SRT_SceneViewState.Is2DMode)
             {
-                SRT_2DModeController.Handle(sv, e);
                 return;
             }
 
